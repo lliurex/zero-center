@@ -1,0 +1,16 @@
+#!/bin/bash
+
+export TEXTDOMAIN="zero-center"
+
+MSG_TESTING=$(gettext "Testing connection to WWW............")
+#Command for test connection to internet
+
+host www.google.es| zenity --progress  --auto-close --pulsate --width 500 --title="Zero-Center-TestNet" --text="$MSG_TESTING" --no-cancel
+if [ "${PIPESTATUS[0]}" = "0" ] ; then 
+	echo "Perfect!!! You have connection to WWW"
+	exit 0
+
+else 
+	echo "You don't have internet connection"
+	exit 1	
+fi

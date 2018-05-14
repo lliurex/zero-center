@@ -1,0 +1,31 @@
+have zero-center &&
+_zero-center() 
+{
+    local cur prev opts base
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    #
+    #  The basic options we'll complete.
+    #
+    opts="set-configured set-non-configured set-failed set-custom-text add-zero-center-notification remove-zero-center-notification add-pulsating-color remove-pulsating-color non-animated animated help"
+
+
+    #
+    #  Complete the arguments to some of the basic commands.
+    #
+    case "${prev}" in
+	set-configured | set-failed | set-non-configured | set-custom-text | add-zero-center-notification | remove-zero-center-notification | remove-pulsating-color | add-pulsating-color )
+	    local names=$(ls /usr/share/zero-center/applications | grep .app | sed {s/".app"/""/} )
+	    COMPREPLY=( $(compgen -W "${names}" -- ${cur}) )
+            return 0
+            ;;
+        *)
+        ;;
+    esac
+
+   COMPREPLY=($(compgen -W "${opts}" -- ${cur}))  
+   return 0
+}
+[ "$have" ] && complete -F _zero-center zero-center

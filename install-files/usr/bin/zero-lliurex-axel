@@ -1,0 +1,205 @@
+#!/bin/bash
+export TEXTDOMAIN="zero-center"
+
+MSG_DONWLOADED=$(gettext "is downloaded in your directory")
+MSG_STARTING=$(gettext "Starting to download your file")
+MSG_CANCELLED=$(gettext "Your dowloading has been cancelled about your file")
+MSG_URL_NOT_EXISTS=$(gettext "Your URL don't exists, imposible to download the file")
+MSG_BUTTON_OK=$(gettext "OK")
+MSG_BUTTON_CANCEL=$(gettext "Cancel")
+MSG_DONWLOADING=$(gettext "Downloading")
+MSG_FROM=$(gettext "from")
+MSG_AT=$(gettext "at")
+MSG_IN=$(gettext "in")
+MSG_EXISTS_FILE=$(gettext "exists, you have to delete it before if you want to download it again")
+
+
+ZEN_BUTTON_OK="--ok-label=$MSG_BUTTON_OK"
+ZEN_BUTTON_CANCEL_OK="--cancel-label=$MSG_BUTTON_CANCEL $ZEN_BUTTON_OK"
+
+
+
+
+
+	#Esta funcion intentara bajar lo que sea sin saber si existe o no en la red
+	#Arg1: detecta si es "-u" o no.
+	#Arg2: URL del fichero a descargar
+	#Arg3: Donde se descargara.
+	function untester {
+		if [ "$1" == "-u" ]; then
+			#OBTENGO EL NOMBRE DEL FICHERO A DESCARGAR
+			if [ "$4" == "" ]; then
+				NAME_FILE=$(echo $2 | rev | cut -d "/" -f1 | rev)
+			else
+				NAME_FILE="$4"
+			fi
+			mainwget "$2" "$3" "$NAME_FILE"
+			exit 0
+		fi
+	
+	}
+
+	function check_parameters {
+		#Compruebo que el directorio existe
+		[ -d $2 ] || mkdir -p $2
+		#Compruebo que la direccion existe
+		
+		if  wget --spider -o /tmp/axel.log "$1"; then
+			#OBTENGO EL NOMBRE DEL FICHERO A DESCARGAR
+			NAME_FILE=$(echo $1 | rev | cut -d "/" -f1 | rev)
+			#Si el fichero ya estaba descargado no puedo descargarlo de nuevo, antes he de borrarlo
+			if [ -f "$2"/"$NAME_FILE" ] ; then
+				echo "$2/$NAME_FILE exists, you have to delete it before if you want to download it again"
+				#zenity --error --text "$2/$NAME_FILE exists, you have to delete it before if you want to download it again" $ZEN_BUTTON_OK
+				zenity --error --text "$2/$NAME_FILE $MSG_EXISTS_FILE" $ZEN_BUTTON_OK
+
+				exit 1
+			else
+			#Todo es correcto no existe el fichero y si existe la URL puedo descargarlo 
+			echo ""
+			echo "URL exists, downloading......."
+			fi
+			
+		else
+			echo ""
+			echo "URL does not exist: $1"
+			echo "Please check it."
+			echo ""
+			zenity --error --text "$MSG_URL_NOT_EXISTS" $ZEN_BUTTON_OK
+			exit 1
+		fi
+		
+		if [ -f "/tmp/axel.log" ]; then
+			rm /tmp/axel.log -rf
+		fi
+	}
+
+	function helper {
+		if [ $1 = "--help" ] || [ $1 = "-h" ]; then
+			echo
+			echo "----ZERO-DOWNLOADED-HELPER----"
+			echo
+			echo "zero-lliurex-axel <option> <arg1> <arg2> <arg3>"
+			echo
+			echo "-u option: you can untested if URL exsist, downloading forced"
+			echo
+			echo "arg1: Is the URL from you download the file"
+			echo "arg2: Is the directory to save the file."
+			echo "arg3: It is an optional argument, you can define the name for the untested downloads"
+			echo
+			echo "If arg2 is blank you can restore the download when you want, and the directory to save it, it will be the actually."
+			echo "--------------------------------------------"
+			echo
+			echo "example: zero-lliurex-axel http://sourceforge.net/projects/arasuite/files/arasuite_unix_2.1.sh /tmp/borrame"
+			echo
+			exit 1
+		fi			
+ 	}
+
+
+	function main {
+		
+		#Creamos un fichero que nos servirá de ayuda para escribir y leer el tanto por cien del fichero descargado
+		touch /tmp/axel.log
+		#En segundo plano realizaremos la descaraga del fichero almacenando su salida en nuestro log, eliminando ést al termianr la descarga
+		(axel -o "$2" "$1" > /tmp/axel.log; if [ -f "/tmp/axel.log" ]; then rm /tmp/axel.log; fi) &
+
+		#Mientras que el fichero de ayuda existe es que estamos descargando
+		#Cuando y ano exista saldremos del while
+		rc=0
+			while [ -f  "/tmp/axel.log" ]; do
+			        sleep .3
+				#En la variable PERCENT almacenamos el tanto por cien que llevamos de descarga
+				#accediento a la ultima linea escrita en el fichero de ayuda y seleccionando solo el dato que necesitamos.
+				PERCENT=$( tail -1 /tmp/axel.log  2>/dev/null  | grep % | sed 's/[^0-9.]*\([0-9.]*\).*/\1/' )
+				#Hacemos echo de los datos que necesita el zenity
+				#echo "Downloading $3 in $2 ...................$PERCENT%"
+				echo "#$MSG_DONWLOADING $3 $MSG_IN $2 ...................$PERCENT%"
+
+				echo "$PERCENT"
+				#por ultimo entubamos la salida al zenity progress para que nos muestre el resultado en pantalla
+			done | zenity --progress percentage=0 --auto-close --width 550 --title="Zero-Downloader-Helper" $ZEN_BUTTON_CANCEL_OK  > /dev/null 2>&1  || rc=1
+			
+			#Si se presiono cancel en la descarga matamos los procesos para finiquitarla
+			
+			if [ ${rc} -eq 1 ] ; then
+				
+				#Borramos el axel.log
+				if [ -f "/tmp/axel.log" ]; then
+					rm /tmp/axel.log -rf
+				fi
+				#CREAMOS UNA LISTA CON LOS PID NECESARIOS Y LOS FINALIZAMOS
+				LISTA=( $( ps -aux | grep axel | grep $1 | grep -v zero | awk '{print $2}') )
+				#echo "The package list is....."
+				#Comento el echo que muestra la lista
+				#echo ${LISTA[@]}
+					for i in "${LISTA[@]}"; do
+						#echo "You cancel zero-lliurex-axel process with PID $i"
+						kill $i > /dev/null 2>&1
+					done
+			rm $2/$NAME_FILE*
+			notify-send -t 5000 -u normal -i /usr/share/icons/lliurex-neu/scalable/apps/zero-center.svg "Zero-Downloader-Helper" "$MSG_CANCELLED $NAME_FILE"
+			echo "Your downloading file $1 has been cancelled"
+			echo ""
+			exit 1
+			fi
+		notify-send -t 5000 -u normal -i /usr/share/icons/lliurex-neu/scalable/apps/zero-center.svg "Zero-Downloader-Helper" "$NAME_FILE $MSG_DONWLOADED $2"
+		echo "File $1 is downloaded in $2"
+	}
+	
+	
+	
+	function mainwget {
+		#Arg1: La URL del fichero a descargar 
+		#Arg2: PATH de descarga del fichero
+		#Arg3: Nombre del fichero una vez descargado.
+			
+		#Me aseguro que el nombre del fichero a descargar no es muy largo
+		NAME=$(echo "$3" | cut -c1-35)
+		
+		#variable que nos indica que se cancela o no la descarga del proceso
+		rc=0
+		
+		#intruccion de descarga del fichero:		
+		# wget outputs progress messages that look like this:
+		#      0K .......... .......... .......... .......... ..........  0%  823K 40s
+		# This function replaces each such line with the pair of lines
+		# 0%
+		# # Downloading... 823K (40s)
+		# It uses minimal buffering, so each line is output immediately
+		# and the user can watch progress as it happens.
+		# Old instruction:
+		#( wget -O "$2"/"$3" "$1" 2>&1 | grep --line-buffered -o "[0-9]*%" | sed  -u -e 's/.* \([0-9]\+%\)\ \+\([0-9.]\+.\) \(.*\)/\1\n# Downloaded \1\ from "'$NAME'"  at \2\/s, ETA \3/' | zenity  --progress percentage=0 --auto-close --auto-kill --width 600 --title="Zero-Downloader-Helper" > /dev/null 2>&1  )|| rc=1
+ 		( wget -O "$2"/"$3" "$1" 2>&1 |  sed -u 's/.*\ \([0-9]\+\)%\ \+\(.*\)$/\1\n'#$MSG_DONWLOADING' \1\% '$MSG_FROM' "'$NAME'" '$MSG_AT' \2/' | zenity  --progress percentage=0 --auto-close --auto-kill --width 600 --title="Zero-Downloader-Helper" --text="$MSG_STARTING '$NAME'........." > /dev/null 2>&1  )|| rc=1
+
+		#Esta parte cancela el proceso del wget si se cancela la descarga en el zenity.
+		
+			if [ ${rc} -eq 1 ] ; then
+				
+				#CREAMOS UNA LISTA CON LOS PID NECESARIOS Y LOS FINALIZAMOS
+				LISTA=( $( ps -aux | grep wget | grep $1 |  awk '{print $2}') )
+				#echo "The package list is....."
+				#Comento el echo que muestra la lista
+				#echo ${LISTA[@]}
+					for i in "${LISTA[@]}"; do
+						#echo "You cancel zero-lliurex-axel process with PID $i"
+						kill $i > /dev/null 2>&1
+						
+					done
+			rm "$2"/"$3"*
+			notify-send -t 5000 -u normal -i /usr/share/icons/lliurex-neu/scalable/apps/zero-center.svg "Zero-Downloader-Helper" "$MSG_CANCELLED $1"
+			echo "Your downloading file $1 has been cancelled"
+			echo ""
+			exit 1
+			fi
+		notify-send -t 5000 -u normal -i /usr/share/icons/lliurex-neu/scalable/apps/zero-center.svg "Zero-Downloader-Helper" "$1 $MSG_DONWLOADED $2"
+		echo "File $3 is downloaded in $2"
+	}
+
+helper "$1"
+untester "$1" "$2" "$3" "$4"
+check_parameters "$1" "$2"
+main "$1" "$2" "$NAME_FILE"
+
+exit 0
+

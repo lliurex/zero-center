@@ -1,0 +1,68 @@
+#!/bin/bash
+
+export TEXTDOMAIN="zero-center"
+
+MSG_UPDATEDINFO=$(gettext "Zero-Lliurex-Update has been updated your repositories info")
+MSG_UPDATING=$(gettext "Updating Repositories info")
+
+LOG="/tmp/zero-lliurex-update.log"
+LOG_EXIT="/tmp/zero-lliurex-update.log.exit"
+
+        function helper {
+		#Aqui listaremos las opciones del helper
+                if [ $1 = "--help" ] || [ $1 = "-h" ]; then
+                        echo
+                        echo "----ZERO-INSTALLER-UPDATE----"
+                        echo
+                        echo "zero-lliurex-update"
+			echo
+			echo "example: zero-installer-update install hotpotatoes"
+                        echo "--------------------------------------------"
+			echo
+                        echo "You don't have to pass any argument."
+			echo
+                        exit 0
+                fi
+        }
+	
+	function main {
+		#Creamos un fichero que nos servirá de ayuda para escribir y leer el tanto por cien del fichero descargado
+		[ ! -f "$LOG" ] || rm "$LOG"
+		touch "$LOG"
+		touch "$LOG_EXIT"
+		
+		echo "................................................................................." >> "$LOG"
+		echo " " >> "$LOG"
+		echo "Zero-lliurex-update" >> "$LOG"
+		echo "................................................................................." >> "$LOG"
+		
+                #En segundo plano realizaremos la instalacion del paquete almacenando su salida en nuestro log, eliminando nuestro fichero ayuda para salir del bucle.
+                (apt-get update >> "$LOG"; rm "$LOG_EXIT") &
+		
+
+                #Mientras que el fichero de ayuda existe es que estamos instalando
+                #Cuando ya no exista saldremos del while
+                        while [ -f  "$LOG_EXIT" ]; do
+                                #En la variable PERCENT almacenamos el tanto por cien que llevamos de descarga
+                                #accediento a la ultima linea escrita en el fichero de ayuda y seleccionando solo el dato que necesitamos.
+                                VAR=$( tail -1 "$LOG" 2>/dev/null )
+                                #Hacemos echo de los datos que necesita el zenity
+				echo "#$VAR" | cut -c1-85
+                                #por ultimo entubamos la salida al zenity progress para que nos muestre el resultado en pantalla
+                        done | zenity --progress  --auto-close --pulsate --width 500 --title="$MSG_UPDATING" --no-cancel > /dev/null 2>&1
+			
+		echo "Zero-Lliurex-Update-------apt-get update has been FINISHED in your system"
+		echo " " >> "$LOG"
+		echo "________________________________________________________________________________" >> "$LOG"
+		echo " " >> "$LOG"
+#		su -c "notify-send -t 5000 -u normal -i /usr/share/icons/lliurex-neu/scalable/apps/zero-center.svg 'Zero-Lliurex-Update' '$MSG_UPDATEDINFO'" $USER
+		notify-send -t 5000 -u normal -i /usr/share/icons/lliurex-neu/scalable/apps/zero-center.svg 'Zero-Lliurex-Update' "$MSG_UPDATEDINFO"
+	}
+
+	
+	
+###################PROGRAMA PRINCIPAL#######################
+
+main
+
+exit 0

@@ -1,0 +1,17 @@
+[SETUP]
+type=python
+path=ZCenterVariables.py
+class=ZCenterVariables
+[METHODS]
+get_state=anonymous
+get_all_states=anonymous
+set_configured=adm,admins
+set_non_configured=adm,admins
+set_failed=adm,admins
+set_custom_state=adm,admins
+set_custom_text=adm,admins
+set_zc_message=adm,admins
+remove_zc_message=adm,admins
+get_zc_messages=anonymous
+add_pulsating_color=adm,admins
+remove_pulsating_color=adm,admins

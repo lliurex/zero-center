@@ -1,0 +1,284 @@
+#!/bin/bash
+
+export TEXTDOMAIN="zero-center"
+
+MSG_INSTALLING=$(gettext "Installing")
+MSG_INSTALLED=$(gettext "Installed")
+MSG_REMOVING=$(gettext "Removing")
+MSG_REMOVED=$(gettext "Removed")
+MSG_FINISH_INSTALLED=$(gettext "has been INSTALLED in your system, and you can view the log in")
+MSG_FINISH_UNINSTALLED=$(gettext "has NOT been INSTALLED in your system, and you can view the log in")
+MSG_FINISH_SYSTEM1=$(gettext "has been")
+MSG_FINISH_ERROR=$(gettext "has NOT been")
+MSG_FINISH_SYSTEM=$(gettext "in your system, and you can view the log in")
+
+
+
+
+        function helper {
+		#Aqui listaremos las opciones del helper
+                if [ $1 = "--help" ] || [ $1 = "-h" ] || [ "$1" = "" ]; then
+                        echo
+                        echo "----ZERO-INSTALLER-HELPER----"
+                        echo
+                        echo "zero-installer <arg1> <arg2>"
+                        echo
+                        echo "arg1: Is the option to the package, install or remove"
+                        echo "arg2: Is the package"
+			echo "arg3: -d option, indicate if you want install the package with dpkg"
+			echo
+			echo "example: zero-installer install hotpotatoes"
+			echo
+			echo "--------------------------------------------"
+			echo
+			echo "You can install deb packages with dpkg"
+			echo "if you define argument 1 like -d"
+			echo
+			echo "example 2: zero-installer -d /tmp/google.deb"
+                        echo
+			echo "--------------------------------------------"
+			echo
+                        echo "You can define package list in a file with 2 arguments, for apt"
+			echo 
+                        echo  "<arg1> <arg2>"
+                        echo
+			echo "<arg1> The name of package"
+			echo "<arg> Instruction for package, install or remove"
+			echo
+			echo "zero-installer -l example.txt"
+			echo
+                        exit 0
+                fi
+        }
+	
+	
+	
+	function main {
+		
+		
+		if [ "$1" == "-d" ]; then
+			
+			touch /tmp/zero-install.log
+			NAME_PACK=$(echo $2 | rev | cut -d "/" -f1 | rev)			
+			#En segundo plano realizaremos la instalacion del paquete almacenando su salida en nuestro log, eliminando nuestro fichero ayuda para salir del bucle.
+			#TEST=`(dpkg -i $2 >> /tmp/zero-installer.log ; echo $?; rm /tmp/zero-install.log) &`
+			tmpfile=$(mktemp)
+			`(dpkg -i $2 >> /tmp/zero-installer.log ; echo $?; rm /tmp/zero-install.log)>$tmpfile `&
+
+			echo " " >> /tmp/zero-installer.log
+			echo "Zero-center-------Your instruction is----------dpkg -i $2" >> /tmp/zero-installer.log
+			echo "................................................................................." >> /tmp/zero-installer.log
+
+			#Mientras que el fichero de ayuda existe es que estamos instalando
+			#Cuando ya no exista saldremos del while
+				while [ -f  "/tmp/zero-install.log" ]; do
+					#En la variable PERCENT almacenamos el tanto por cien que llevamos de descarga
+					#accediento a la ultima linea escrita en el fichero de ayuda y seleccionando solo el dato que necesitamos.
+					VAR=$( tail -1 /tmp/zero-installer.log  2>/dev/null )
+					#Hacemos echo de los datos que necesita el zenity
+					echo "#$MSG_INSTALLING $2.......$VAR" | cut -c1-85
+					#por ultimo entubamos la salida al zenity progress para que nos muestre el resultado en pantalla
+				done | zenity --progress  --auto-close --pulsate --width 500 --title="Zero-Center-Installer" --no-cancel > /dev/null 2>&1
+			echo "................................................................................." >> /tmp/zero-installer.log
+			#if [ $TEST -eq 0 ]
+			if [ `cat $tmpfile` -eq 0 ]
+	
+			then
+				echo "Zero-center-------Your package $NAME_PACK has been INSTALLED in your system"
+				echo " " >> /tmp/zero-installer.log
+				echo "Zero-center-------Your package $NAME_PACK has been INSTALLED in your system" >> /tmp/zero-installer.log
+				echo "________________________________________________________________________________" >> /tmp/zero-installer.log
+				echo " " >> /tmp/zero-installer.log
+				notify-send -t 8000 -u normal -i zero-center 'Zero-Installer' "$NAME_PACK $MSG_FINISH_INSTALLED /tmp/zero-installer.log"
+				exit 0
+			else
+				echo "Zero-center-------Your package $NAME_PACK has NOT been INSTALLED in your system"
+				echo " " >> /tmp/zero-installer.log
+				echo "Zero-center-------Your package $NAME_PACK has NOT been INSTALLED in your system" >> /tmp/zero-installer.log
+				echo "________________________________________________________________________________" >> /tmp/zero-installer.log
+				echo " " >> /tmp/zero-installer.log
+				notify-send -t 8000 -u normal -i zero-center "Zero-Installer" "$NAME_PACK $MSG_FINISH_UNINSTALLED /tmp/zero-installer.log"
+				exit 1
+			fi
+			rm $tmpfile 2>/dev/null
+		else
+			#Creamos un fichero que nos servirá de ayuda para escribir y leer el tanto por cien del fichero descargado
+			touch /tmp/zero-install.log
+			
+			INSTRUCCION=$1
+			
+			if [ "$INSTRUCCION" = "deinstall" ];then
+				INSTRUCCION="remove"
+			elif [ "$INSTRUCCION" = "install" ];then
+				check_update_repos
+			fi
+			
+			#En segundo plano realizaremos la instalacion del paquete almacenando su salida en nuestro log, eliminando nuestro fichero ayuda para salir del bucle.
+			#TEST=`(apt-get $INSTRUCCION -y --allow-unauthenticated $2 >> /tmp/zero-installer.log ; echo $?;rm /tmp/zero-install.log) &`
+			tmpfile=$(mktemp)
+			`(apt-get $INSTRUCCION -y --allow-unauthenticated $2 >> /tmp/zero-installer.log ; echo $?;rm /tmp/zero-install.log)>$tmpfile`&
+
+			echo "................................................................................." >> /tmp/zero-installer.log
+			echo " " >> /tmp/zero-installer.log
+			echo "Zero-center-------Your instruction is----------apt-get $INSTRUCCION -y --allow-unauthenticated $2" >> /tmp/zero-installer.log
+			echo "................................................................................." >> /tmp/zero-installer.log
+
+			#Mientras que el fichero de ayuda existe es que estamos instalando
+			#Cuando ya no exista saldremos del while
+				while [ -f  "/tmp/zero-install.log" ]; do
+					#En la variable PERCENT almacenamos el tanto por cien que llevamos de descarga
+					#accediento a la ultima linea escrita en el fichero de ayuda y seleccionando solo el dato que necesitamos.
+					VAR=$( tail -1 /tmp/zero-installer.log  2>/dev/null )
+					#Hacemos echo de los datos que necesita el zenity
+					echo "#$ACTION $2.......$VAR" | cut -c1-85
+					#por ultimo entubamos la salida al zenity progress para que nos muestre el resultado en pantalla
+				done | zenity --progress  --auto-close --pulsate --width 500 --title="Zero-Center-Installer" --no-cancel > /dev/null 2>&1
+			#if [ $TEST -eq 0 ]
+			if [ `cat $tmpfile` -eq 0 ]
+			then			
+				echo "Zero-center-------Your package $2 has been $FINISHED in your system"
+				echo " " >> /tmp/zero-installer.log
+				echo "Zero-center-------Your package $2 has been $FINISHED in your system" >> /tmp/zero-installer.log
+				echo "________________________________________________________________________________" >> /tmp/zero-installer.log
+				echo " " >> /tmp/zero-installer.log
+				notify-send -t 8000 -u normal -i zero-center 'Zero-Installer' "$2 $MSG_FINISH_SYSTEM1 $FINISHED $MSG_FINISH_SYSTEM /tmp/zero-installer.log"
+			else
+				echo "Zero-center-------Your package $2 has NOT been $FINISHED in your system"
+				echo " " >> /tmp/zero-installer.log
+				echo "Zero-center-------Your package $2 has NOT been $FINISHED in your system" >> /tmp/zero-installer.log
+				echo "________________________________________________________________________________" >> /tmp/zero-installer.log
+				echo " " >> /tmp/zero-installer.log
+				notify-send -t 8000 -u normal -i zero-center 'Zero-Installer' "$2 $MSG_FINISH_ERROR $FINISHED $MSG_FINISH_SYSTEM /tmp/zero-installer.log"
+				exit 1
+			fi
+			rm $tmpfile 2>/dev/null
+		fi
+		}
+	
+	function check_update_repos {
+		#Only update repos if needed
+		if [ $(date +"%y%m%d") != $(date -r /var/cache/apt/pkgcache.bin +"%y%m%d") ]; then
+			echo "Updating repos..."
+			zero-repos-update
+		else
+			echo "Repos up-to-date..."
+		fi
+	}
+
+	
+	function check_removed {
+		
+		#Testeamos si el paquete esta instalado, no haciendo nada en el caso afirmativo o instalandolo en el caso negativo.
+		TEST=$( dpkg-query -s $2 2> /dev/null| grep Status | cut -d " " -f 4 )
+		if [ "$TEST" = 'installed' ]; then
+			echo "Package $2 already installed, do nothing"
+			echo "Package $2 already installed, do nothing" >> /tmp/zero-installer.log
+			echo "________________________________________________________________________________" >> /tmp/zero-installer.log
+			echo " " >> /tmp/zero-installer.log
+		else
+			main $1 $2			
+		fi
+		
+	}
+	
+	function check_install {
+		
+		#Testeamos si el paquete esta quitado, no haciendo nada en el caso afirmativo o desinstalandolo en el caso negativo
+		TEST=$( dpkg-query -s $2 2> /dev/null| grep Status | cut -d " " -f 4 )
+		if [ "$TEST" != 'installed' ]; then
+			echo "Package $2 already removed, do nothing"
+			echo "Package $2 already removed, do nothing" >> /tmp/zero-installer.log
+			echo "________________________________________________________________________________" >> /tmp/zero-installer.log
+			echo " " >> /tmp/zero-installer.log
+		else
+			main $1 $2	
+		fi
+	
+		
+	}
+	
+   function check_package {
+                
+		if [ $1 = "install" ] ; then
+			ACTION="$MSG_INSTALLING"
+			FINISHED="$MSG_INSTALLED"
+			check_removed $1 $2
+		else
+			ACTION="$MSG_REMOVING"
+			FINISHED="$MSG_REMOVED"
+			check_install $1 $2
+		fi
+	}
+	
+	
+	function check_parameters {
+              
+		#En esta funcion testeamos los parametros para que ambos sean coherentes
+		#Testeamos que el primer parámetro sea uno de los permitidos
+                if [ "$1" != "install" -a "$1" != "remove"  -a "$1" != "deinstall" ] ;then
+			echo "You define a wrong action for your package, please check it. Now abort zero-installer command" >> /tmp/zero-installer.log
+                        helper -h
+                fi
+		#Testeamos el segundo parametro comprobando que existe en el repositorio, sino abortamos la instruccion.
+		LANG=en apt-cache show $2 | grep -i Version
+		if [ "$?" != "0" ]; then
+			msg=$"Impossible to install $2, it dont exists in your repositories, abort zero-installer command"
+			notify-send -t 10000 -u normal -i zero-center 'Zero-Installer' "${msg}"
+			echo "Your package $2 don't exists in your repositories, abort zero-installer command"
+			echo "Your package $2 don't exists in your repositories, abort zero-installer command" >> /tmp/zero-installer.log
+			notify-send -t 10000 -u normal -i zero-center 'Zero-Installer' "Your package $2 DO NOT EXISTS in your repositories, abort zero-installer command, and you can view the log in /tmp/zero-installer.log. If you cannot resolve the problem please contact with Lliurex Team at http://mestreacasa.gva.es/web/lliurex/forums"
+			exit 1
+		fi
+	}
+	
+	
+	function check_list {
+	
+		#Testeamos si el tercer parametro nos indica dpkg y lo lanzamos ya
+		if [ "$1" == "-d" ]; then
+			main "$1" "$2"
+		fi
+		
+		#Compruebo que es una lista y si lo es la recorro linea a linea
+		if [ "$1" = "-l"  ]; then
+			oldIFS=$IFS     # conserva el separador de campo
+			IFS=$'\n'
+			for line in $(cat $2); do
+				#En cada linea obtengo el paquete y la instruccion a realizar
+				PACKAGE=$( echo "$line" | awk '1 { print  $1 }' )
+				INSTRUCTION=$( echo "$line" | awk '1 { print  $2 }' )
+				echo "You want $INSTRUCTION from your system this package, $PACKAGE"
+				echo "You want $INSTRUCTION from your system this package, $PACKAGE" >> /tmp/zero-installer.log
+				check_parameters $INSTRUCTION $PACKAGE
+				check_package $INSTRUCTION $PACKAGE
+			done
+			IFS=$old_IFS
+			exit 0
+		fi			
+	}
+	
+	
+###################PROGRAMA PRINCIPAL#######################
+
+#Log para el zero-center
+if [ -f /tmp/zero-installer.log ]; then
+	rm  /tmp/zero-installer.log
+fi
+
+echo " " >> /tmp/zero-installer.log
+echo "------Zero-Installer-Resume--------" >> /tmp/zero-installer.log
+echo "" >> /tmp/zero-installer.log
+echo "If you detect any problem please contact with Lliurex Team lliurex@lliurex.net" >> /tmp/zero-installer.log
+echo "Or submit it in http://mestreacasa.gva.es/web/lliurex/forums" >> /tmp/zero-installer.log
+echo "" >> /tmp/zero-installer.log
+
+#Dentro del programa principal lo primero que hago es mirar si es una lista	
+check_list $1 $2
+#Chequeo si los parametros son correctos
+check_parameters $1 $2
+#Chequeo si el paquete esta instalado o quitado y hago lo que se me pide, si no esta hecho de antes.
+check_package $1 $2
+
+exit 0
+
+

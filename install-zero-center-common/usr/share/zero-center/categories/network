@@ -1,0 +1,6 @@
+name=Network
+name[es]=Red
+name[es_ES]=Red
+name[ca_ES@valencia]=Xarxa
+icon=preferences-system-network
+level=90

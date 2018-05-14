@@ -1,0 +1,243 @@
+# Catalan translations for PACKAGE package
+# Traduccions al català del paquet «PACKAGE».
+# Copyright (C) 2017 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# lliurex <lliurex@gva.es>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-30 13:32+0200\n"
+"PO-Revision-Date: 2017-06-30 13:32+0200\n"
+"Last-Translator: lliurex <lliurex@gva.es>\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:576
+#: ../install-files/usr/share/zero-center/zero-center.py:739
+#: ../install-files/usr/share/zero-center/zero-center.py:745
+msgid "Unmet dependences"
+msgstr "Dependencias incumplidas"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:601
+#: ../install-files/usr/share/zero-center/zero-center.py:768
+#: ../install-files/usr/share/zero-center/zero-center.py:774
+msgid "Configured"
+msgstr "Configurado"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:620
+#: ../install-files/usr/share/zero-center/zero-center.py:814
+#: ../install-files/usr/share/zero-center/zero-center.py:819
+msgid "Not configured"
+msgstr "Sin configurar"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:636
+#: ../install-files/usr/share/zero-center/zero-center.py:791
+#: ../install-files/usr/share/zero-center/zero-center.py:797
+msgid "Failed"
+msgstr "Ha fallado"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:1116
+msgid ""
+"We are in a center model and therefore should install this service on the "
+"master \n"
+" server to be accessible from any computer in the center, whether to "
+"continue \n"
+" with the installation on this computer the service is only available on "
+"computers \n"
+" that are in the internal network of this server."
+msgstr ""
+"Estamos en un modelo de centro y por tanto debería instalar este servicio "
+"en \n"
+" el servidor maestro para que sea accesible desde cualquier equipo del "
+"centro, \n"
+" si desea continuar con la instalación en este equipo el servicio sólo "
+"estará \n"
+" disponible en aquellos equipos que estén en la red interna de este este "
+"servidor."
+
+#: ../install-files/usr/share/zero-center/zero-center.py:1121
+#, python-format
+msgid "<b>%s</b> is already configured. Do you want to execute it again?"
+msgstr "<b>%s</b> ya está configurado. ¿Quieres volver a ejecutarlo?"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:1229
+#, python-format
+msgid "<b>%s</b> is being executed. Please wait until it finishes."
+msgstr "<b>%s</b> esta siendo ejecutado. Por favor espera hasta que termine."
+
+#: ../install-files/usr/share/zero-center/zero-center.py:1247
+#, python-format
+msgid "<b>%s</b> is being executed. Are you sure you want to exit?"
+msgstr "<b>%s</b> esta siendo ejecutado. ¿Estás seguro de querer salir?"
+
+#: ../install-files/usr/bin/zero-installer:5
+#: ../install-files/usr/bin/zero-reinstall:4
+msgid "Installing"
+msgstr "Instalando"
+
+#: ../install-files/usr/bin/zero-installer:6
+#: ../install-files/usr/bin/zero-reinstall:5
+msgid "Installed"
+msgstr "Instalado"
+
+#: ../install-files/usr/bin/zero-installer:7
+#: ../install-files/usr/bin/zero-reinstall:6
+msgid "Removing"
+msgstr "Borrando"
+
+#: ../install-files/usr/bin/zero-installer:8
+#: ../install-files/usr/bin/zero-reinstall:7
+#: ../install-files/usr/bin/zero-reinstall-list:7
+msgid "Removed"
+msgstr "Borrado"
+
+#: ../install-files/usr/bin/zero-installer:9
+#: ../install-files/usr/bin/zero-reinstall:8
+#: ../install-files/usr/bin/zero-reinstall-list:8
+msgid "has been INSTALLED in your system, and you can view the log in"
+msgstr "ha sido Instalado en tu sistema, y tu puedes ver el log en"
+
+#: ../install-files/usr/bin/zero-installer:10
+msgid "has NOT been INSTALLED in your system, and you can view the log in"
+msgstr "no ha sido instalado en tu sistema, y tu puedes ver el log en"
+
+#: ../install-files/usr/bin/zero-installer:11
+#: ../install-files/usr/bin/zero-reinstall:9
+#: ../install-files/usr/bin/zero-reinstall-list:9
+msgid "has been"
+msgstr "ha sido"
+
+#: ../install-files/usr/bin/zero-installer:12
+msgid "has NOT been"
+msgstr "no ha sido"
+
+#: ../install-files/usr/bin/zero-installer:13
+#: ../install-files/usr/bin/zero-reinstall:10
+#: ../install-files/usr/bin/zero-reinstall-list:10
+msgid "in your system, and you can view the log in"
+msgstr "en tu sistema, y tu puedes ver el log en"
+
+#: ../install-files/usr/bin/zero-lliurex-axel:4
+#: ../install-files/usr/bin/zero-lliurex-wget:4
+msgid "is downloaded in your directory"
+msgstr "esta descargado en tu directorio"
+
+#: ../install-files/usr/bin/zero-lliurex-axel:5
+#: ../install-files/usr/bin/zero-lliurex-wget:5
+msgid "Starting to download your file"
+msgstr "Comenzando a descargar el fichero"
+
+#: ../install-files/usr/bin/zero-lliurex-axel:6
+#: ../install-files/usr/bin/zero-lliurex-wget:6
+msgid "Your dowloading has been cancelled about your file"
+msgstr "La descarga ha sido cancelada sobre el fichero"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:7
+#: ../install-files/usr/bin/zero-lliurex-axel:7
+msgid "Your URL don't exists, imposible to download the file"
+msgstr "La url no existe, imposible descargar el fichero"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:8
+#: ../install-files/usr/bin/zero-lliurex-axel:8
+#: ../install-files/usr/bin/zero-reinstall:12
+#: ../install-files/usr/bin/zero-reinstall-list:11
+msgid "OK"
+msgstr "Aceptar"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:9
+#: ../install-files/usr/bin/zero-lliurex-axel:9
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:10
+#: ../install-files/usr/bin/zero-lliurex-axel:10
+msgid "Downloading"
+msgstr "Descargando"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:11
+#: ../install-files/usr/bin/zero-lliurex-axel:11
+msgid "from"
+msgstr "de"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:12
+#: ../install-files/usr/bin/zero-lliurex-axel:12
+msgid "at"
+msgstr "a"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:13
+#: ../install-files/usr/bin/zero-lliurex-axel:13
+msgid "in"
+msgstr "en"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:14
+#: ../install-files/usr/bin/zero-lliurex-axel:14
+msgid "exists, you have to delete it before if you want to download it again"
+msgstr "existe, debes borrarlo antes, si quieres volver a descargarlo"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:12
+msgid "Cheking net parameters to download "
+msgstr "Chequeando los parámetros de la red para descargar "
+
+#: ../install-files/usr/bin/zero-lliurex-wget:13
+#: ../install-files/usr/bin/zero-reinstall:11
+msgid ""
+"Please review your repositories and reinstall it again .If you can't resolve "
+"the problem please contact with Lliurex Team at http://mestreacasa.gva.es/"
+"web/lliurex/forums"
+msgstr ""
+"Por favor revisa tus repositorios instalados y prueba a reinstalar esto de "
+"nuevo. Si no puedes resolver el problema por favor contacta con el equipo de "
+"Lliurex en http://mestreacasa/web/lliurex/forums"
+
+#: ../install-files/usr/bin/zero-reinstall-list:4
+msgid ""
+"Some packages aren't in your repositories, and they aren't installed, you "
+"can see it in"
+msgstr ""
+"Algunos paquetes no están en los repositorios y no han sido instalados, "
+"puedes revisarlo en"
+
+#: ../install-files/usr/bin/zero-reinstall-list:5
+msgid "Please review your repositories and reinstall it again ."
+msgstr ""
+"Por favor revisa tus repositorios instalados y prueba a reinstalar esto de "
+"nuevo."
+
+#: ../install-files/usr/bin/zero-reinstall-list:6
+msgid ""
+"If you can't resolve the problem please contact with Lliurex Team at http://"
+"mestreacasa.gva.es/web/lliurex/forums"
+msgstr ""
+"Si no puedes resolver el problema por favor contacta con el equipo de "
+"Lliurex en http://mestreacasa/web/lliurex/forums"
+
+#: ../install-files/usr/bin/zero-repos-update:5
+msgid "Zero-Lliurex-Update has been updated your repositories info"
+msgstr ""
+"Zero-Lliurex-Update ha actualizado la información sobre los paquetes de tu "
+"repositorio"
+
+#: ../install-files/usr/bin/zero-repos-update:6
+msgid "Updating Repositories info"
+msgstr "Actualizando la información de los repositorios"
+
+#: ../install-files/usr/bin/zero-testnet:5
+msgid "Testing connection to WWW............"
+msgstr "Testeando tu conexión a internet.........."
+
+msgid ""
+"Impossible to install $2, it dont exists in your repositories, abort zero-"
+"installer command"
+msgstr "No fue posible instalar $2. No existe en los repositorios"
+
+msgid " dependences have not been configured"
+msgstr " Las dependencias no han sido configuradas"
+
+#~ msgid "please keep calm......... "
+#~ msgstr "un momento por favor......... "

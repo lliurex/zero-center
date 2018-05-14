@@ -1,0 +1,142 @@
+#!/bin/bash
+export TEXTDOMAIN="zero-center"
+
+MSG_REVIEW1=$(gettext "Some packages aren't in your repositories, and they aren't installed, you can see it in")
+MSG_REVIEW2=$(gettext "Please review your repositories and reinstall it again .")
+MSG_CONTACT=$(gettext "If you can't resolve the problem please contact with Lliurex Team at http://mestreacasa.gva.es/web/lliurex/forums")
+MSG_REMOVED=$(gettext "Removed")
+MSG_FINISH_INSTALLED=$(gettext "has been INSTALLED in your system, and you can view the log in")
+MSG_FINISH_SYSTEM1=$(gettext "has been")
+MSG_FINISH_SYSTEM=$(gettext "in your system, and you can view the log in")
+MSG_BUTTON_OK=$(gettext "OK")
+
+
+#Variables :
+#Arg1: Ruta de la lista de paquetes
+#Arg2: Nombre del paquete para la info en zenity
+PACKAGE_LIST="$1"
+PACKAGE_NAME="$2"
+ZERO_LOG="/tmp/zero-installer.log"
+
+NAME_FILE=$(echo $PACKAGE_LIST | rev | cut -d "/" -f1 | rev)
+
+INSTALL_LOG="/tmp/zero-${NAME_FILE}.log"
+
+ZEN_BUTTON_OK="--ok-label=$MSG_BUTTON_OK"
+
+ERROR=1
+
+####FUNCIONES
+	
+	#Aqui listaremos las opciones del helper
+	function helper {
+		
+                if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ "$1" = "" ]; then
+                        echo
+                        echo "----ZERO-REINSTALL-LIST-HELPER----"
+                        echo
+                        echo "zero-reinstall-list <arg1>"
+                        echo
+                        echo "arg1: Is the name of the FILE with the names of the package, separates with EOF"
+			echo
+			echo "arg2: Is the name of the zenity info with resume, is optional"
+			echo 
+			echo "example: zero-reinstall-list LIST example"
+			echo
+			echo "LIST is a file with:"
+			echo
+			echo "hotpotatoes"
+			echo "openssh-server"
+			echo "sl"
+			echo
+                        exit 0
+                fi
+        }
+
+	#FUNCION QUE TESTEA SI UN PAQUETE ESTA INSTALADO, BORRANDOLO EN CASO AFIRMATIVO
+	function test_install {
+		#Testeamos si el paquete esta instalado, no haciendo nada en el caso afirmativo o instalandolo en el caso negativo.
+		TEST=$( dpkg-query -s $1 2> /dev/null| grep Status | cut -d " " -f 4 )
+		if [ "$TEST" = 'installed' ]; then
+			echo " " >> $INSTALL_LOG
+			echo " ----------Zero-Test-Uninstall------------" >> $INSTALL_LOG
+			echo " " >> $INSTALL_LOG
+			echo "Package $1 already installed, we have to uninstall it" >> $INSTALL_LOG
+			echo "Package $1 already installed, we have to uninstall it"
+			zero-installer remove $1
+			cat $ZERO_LOG >> $INSTALL_LOG
+		else
+			echo " " >> $INSTALL_LOG
+			echo " ----------Zero-Test-Uninstall------------" >> $INSTALL_LOG
+			echo " " >> $INSTALL_LOG
+			echo "Package $1 is not installed, do nothing" >> $INSTALL_LOG
+			echo "Package $1 is not installed, do nothing"
+		fi
+
+	}
+	
+
+################MAIN######################
+
+#Log para el zero-center
+if [ -f "$INSTALL_LOG" ]; then
+	rm  "$INSTALL_LOG"
+fi
+
+touch "$INSTALL_LOG"
+
+#COMPROBAMOS QUE NO ES LA AYUDA
+helper $1
+
+#CREAMOS UNA LISTA CON LOS PROGRAMAS NECESARIOS Y LOS TESTEAMOS SI ESTAN INSTALADOS
+LISTA=( $( cat $PACKAGE_LIST | awk '{print $1}' ) )
+echo "The package list is....."
+echo ${LISTA[@]}
+	for i in "${LISTA[@]}"; do
+		echo "Now test_install $i"
+		#Testeamos si el paquete esta instalado y si es asi lo borramos
+		test_install $i
+		#Me guardo el fichero de los logs por si algo fallase o para revisarlo
+		cat $ZERO_LOG >> $INSTALL_LOG
+		
+	done
+
+##YA SABEMOS QUE  EL PROGRAMA ESTA DESINSTALADO, VAMOS A INSTALARLO
+##LO HACEMOS ASI Y NO TODO DEL TIRON PORQUE SINO PUEDE SER QUE ALGUNA DEPENDENCIA QUE SE ARRASTRE FALLE
+	for i in "${LISTA[@]}"; do		
+		echo " " >> $INSTALL_LOG
+		echo "Zero-installer install the package $i" >> $INSTALL_LOG
+		echo "Zero-installer install the package $i"
+		zero-installer install $i
+		#Get zero-installer exit status
+		ERROR=$?
+		#Me guardo el fichero de los logs por si algo fallase o para revisarlo
+		cat $ZERO_LOG >> $INSTALL_LOG
+	done
+
+#Ponemos el nombre si no fue especificado en la llamada al comando	
+#if [ "$PACKAGE_NAME" == " " ]; then
+if [ -z "$PACKAGE_NAME" ]; then
+	PACKAGE_NAME=$(echo "$PACKAGE_LIST" | rev | cut -d "/" -f1 | rev)
+fi
+
+#COMPROBAMOS QUE LA LISTA SE INSTALO BIEN
+echo "--------PACKAGE NOT IN REPOSITORIES--------- " >> $INSTALL_LOG
+for i in "${LISTA[@]}"; do
+	TEST=$( dpkg-query -s $i 2> /dev/null| grep Status | cut -d " " -f 4 )
+	
+	if [ "$TEST" != 'installed' ]; then
+		echo "$i is not in repository" >> $INSTALL_LOG
+	fi
+
+done
+
+fgrep "is not in repository" "$INSTALL_LOG" 
+if  [ "$?" == "0" -o "$ERROR" -gt 0 ]; then
+	zenity --info --title="Zero-reinstaller" --text="$MSG_REVIEW1 $INSTALL_LOG. $MSG_REVIEW2 .$MSG_CONTACT" ZEN_BUTTON_OK > /dev/null 2>&1 &
+	exit 1
+else
+	zenity --info --title="Zero-reinstaller" --text="$PACKAGE_NAME $MSG_FINISH_INSTALLED $INSTALL_LOG" ZEN_BUTTON_OK > /dev/null 2>&1 &
+fi
+
+exit 0

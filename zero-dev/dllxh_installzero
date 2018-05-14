@@ -1,0 +1,86 @@
+#!/bin/bash
+# Author:       Luis Garcia Gisbert <garcia_luigis@gva.es>
+# Description:  Install zero-center plugins.
+#
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
+
+
+# library
+[ "$LLXCFG_DEV_LIB" ] || LLXCFG_DEV_LIB="/usr/share/lliurex/llxcfg-dev/llxcfg-dev.sh"
+[ -f "${LLXCFG_DEV_LIB}" ] || exit 1
+. ${LLXCFG_DEV_LIB}
+
+#functions
+zero_get_script(){
+   USING="$(sed -e "s%^Using=pe%using%g" "$1")"
+   [ "$USING" ] ||return 0
+   PROG="$(sed -ne "s%^ScriptPath=[[:blank:]]*%%p" "$1")"
+   [ "$PROG" ] || return 0
+   if ! echo "$PROG" |grep -q "^/" ; then
+      PROG="$(echo "${ZDEV_ZMDDIR}/$PROG" |sed -e "s%//%/%g")"
+   fi
+   echo "$PROG"
+}
+
+zero_get_groups(){
+   sed -ne "/^Groups=/{s%^.*=%%;p}" "$1" |tr ";" "," | sed -e "s%\*%\.\*%g"
+}
+
+zero_get_users(){
+   sed -ne "/^Users=/{s%^.*=%%;p}" "$1" |tr ";" "," | sed -e "s%\*%\.\*%g"
+}
+
+dl_install_zero(){
+   p="$1"
+   INST_LIST="debian/${p}.zero"
+   if [ "$p" = "$(dl_first_pkg)" ] ; then
+      ALT_INST_LIST="debian/zero"
+      [ -s "$ALT_INST_LIST" ] && INST_LIST="$ALT_INST_LIST"
+   fi
+   if [ -s "$INST_LIST" ] ; then
+      cat "$INST_LIST" |while read line ; do
+         dl_read_pkgline $line
+	 ZDIR="${DL_PKG_LINE[0]}"
+         if [ "${ZDIR}" -a -d "${ZDIR}" ] ; then
+            mkdir -p "debian/$p/${ZDEV_APPDIR}"
+            mkdir -p "debian/$p/${ZDEV_ZMDDIR}"
+            find "$ZDIR" -maxdepth 1 -mindepth 1 -xtype f -name "*.$ZDEV_APPEXT" -exec cp "{}" "debian/$p/$ZDEV_APPDIR" \;
+            find "$ZDIR" -maxdepth 1 -mindepth 1 -xtype f -name "*.$ZDEV_ZMDEXT" -exec install -m 755 "{}" "debian/$p/$ZDEV_ZMDDIR" \;
+            for APP in $(find "$ZDIR" -maxdepth 1 -mindepth 1 -xtype f -name "*.$ZDEV_APPEXT") ; do
+               PE_CMD="$(zero_get_script "$APP")"
+               if [ "$PE_CMD" ] ; then
+                  PE_GROUPS="$(zero_get_groups "$APP")"
+                  dl_pe_group "$p" "$PE_CMD" "$PE_GROUPS"
+                  PE_USERS="$(zero_get_users "$APP")"
+                  [ -z "$PE_USERS" ] || dl_pe_user "$p" "$PE_CMD" $PE_USERS
+               fi
+            done
+         fi
+      done
+   fi
+}
+
+# main
+
+dl_deb_test
+ALL_PKGS="$(dl_list_binpkgs)"
+
+for package in ${ALL_PKGS} ; do
+    dl_install_zero "$package"
+done
+
+

@@ -1,0 +1,19 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Zero-Center
+Name[es]=Zero Center, centro de control de LliureX
+Name[ca]=Zero Center, centre de control de LliureX 
+Name[ca_ES@valencia]=Zero Center, centre de control de LliureX 
+Name[ca_ES.UTF-8@valencia]=Zero Center, centre de control de LliureX
+Comment=Admin and configure every tool in LliureX
+Comment[es]=Administrar y configurar todas las herramientas de LliureX
+Comment[ca_ES@valencia]=Administra i configura totes les ferramentes de LliureX
+Comment[ca_ES.UTF-8@valencia]=Administra i configura totes les ferramentes de LliureX
+Comment[ca]=Administra i configura totes les ferramentes de LliureX
+Exec=zero-center
+Terminal=false
+Icon=zero-center
+Type=Application
+GenericName=Zero-Center
+Categories=LliureX-Administration;

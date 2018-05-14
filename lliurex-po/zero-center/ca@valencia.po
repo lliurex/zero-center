@@ -1,0 +1,238 @@
+# Catalan translations for PACKAGE package
+# Traduccions al català del paquet «PACKAGE».
+# Copyright (C) 2017 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# lliurex <liurex@gva.es>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-30 13:33+0200\n"
+"PO-Revision-Date: 2017-06-30 13:33+0200\n"
+"Last-Translator: lliurex <liurex@gva.es>\n"
+"Language-Team: Catalan\n"
+"Language: ca_ES@valencia\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:576
+#: ../install-files/usr/share/zero-center/zero-center.py:739
+#: ../install-files/usr/share/zero-center/zero-center.py:745
+msgid "Unmet dependences"
+msgstr "Dependències que no s'han trobat."
+
+#: ../install-files/usr/share/zero-center/zero-center.py:601
+#: ../install-files/usr/share/zero-center/zero-center.py:768
+#: ../install-files/usr/share/zero-center/zero-center.py:774
+msgid "Configured"
+msgstr "Configurat"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:620
+#: ../install-files/usr/share/zero-center/zero-center.py:814
+#: ../install-files/usr/share/zero-center/zero-center.py:819
+msgid "Not configured"
+msgstr "Sense configurar"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:636
+#: ../install-files/usr/share/zero-center/zero-center.py:791
+#: ../install-files/usr/share/zero-center/zero-center.py:797
+msgid "Failed"
+msgstr "Ha fallat"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:1116
+msgid ""
+"We are in a center model and therefore should install this service on the "
+"master \n"
+" server to be accessible from any computer in the center, whether to "
+"continue \n"
+" with the installation on this computer the service is only available on "
+"computers \n"
+" that are in the internal network of this server."
+msgstr ""
+"Aquest és un model de centre i, per tant, heu d'instal·lar aquest servei en "
+"el servidor \\n mestre perquè siga accessible des de qualsevol equip del "
+"centre; si voleu \\n continuar amb la instal·lació en aquest equip, el "
+"servei només estarà disponible \\n en aquells equips que estiguen en la "
+"xarxa \\n interna d'aquest servidor."
+
+#: ../install-files/usr/share/zero-center/zero-center.py:1121
+#, python-format
+msgid "<b>%s</b> is already configured. Do you want to execute it again?"
+msgstr "<b>%s</b> ja està configurat. Voleu tornar-lo a executar?"
+
+#: ../install-files/usr/share/zero-center/zero-center.py:1229
+#, python-format
+msgid "<b>%s</b> is being executed. Please wait until it finishes."
+msgstr "<b>%s</b> s'està executant. Espereu fins que finalitze."
+
+#: ../install-files/usr/share/zero-center/zero-center.py:1247
+#, python-format
+msgid "<b>%s</b> is being executed. Are you sure you want to exit?"
+msgstr "<b>%s</b> s'està executant. Esteu segur que voleu eixir?"
+
+#: ../install-files/usr/bin/zero-installer:5
+#: ../install-files/usr/bin/zero-reinstall:4
+msgid "Installing"
+msgstr "S'està instal·lant"
+
+#: ../install-files/usr/bin/zero-installer:6
+#: ../install-files/usr/bin/zero-reinstall:5
+msgid "Installed"
+msgstr "Està instal·lat"
+
+#: ../install-files/usr/bin/zero-installer:7
+#: ../install-files/usr/bin/zero-reinstall:6
+msgid "Removing"
+msgstr "S'està suprimint..."
+
+#: ../install-files/usr/bin/zero-installer:8
+#: ../install-files/usr/bin/zero-reinstall:7
+#: ../install-files/usr/bin/zero-reinstall-list:7
+msgid "Removed"
+msgstr "Suprimit"
+
+#: ../install-files/usr/bin/zero-installer:9
+#: ../install-files/usr/bin/zero-reinstall:8
+#: ../install-files/usr/bin/zero-reinstall-list:8
+msgid "has been INSTALLED in your system, and you can view the log in"
+msgstr "ha sigut instal·lat al sistema, pots veure el registre ací:"
+
+#: ../install-files/usr/bin/zero-installer:10
+msgid "has NOT been INSTALLED in your system, and you can view the log in"
+msgstr "no ha sigut instal·lat al sistema, pots veure el registre ací:"
+
+#: ../install-files/usr/bin/zero-installer:11
+#: ../install-files/usr/bin/zero-reinstall:9
+#: ../install-files/usr/bin/zero-reinstall-list:9
+msgid "has been"
+msgstr "ha sigut"
+
+#: ../install-files/usr/bin/zero-installer:12
+msgid "has NOT been"
+msgstr "no ha sigut"
+
+#: ../install-files/usr/bin/zero-installer:13
+#: ../install-files/usr/bin/zero-reinstall:10
+#: ../install-files/usr/bin/zero-reinstall-list:10
+msgid "in your system, and you can view the log in"
+msgstr "al sistema, pots veure el registre ací:"
+
+#: ../install-files/usr/bin/zero-lliurex-axel:4
+#: ../install-files/usr/bin/zero-lliurex-wget:4
+msgid "is downloaded in your directory"
+msgstr "ha sigut descarregat a la carpeta:"
+
+#: ../install-files/usr/bin/zero-lliurex-axel:5
+#: ../install-files/usr/bin/zero-lliurex-wget:5
+msgid "Starting to download your file"
+msgstr "S'està descàrregant el fitxer:"
+
+#: ../install-files/usr/bin/zero-lliurex-axel:6
+#: ../install-files/usr/bin/zero-lliurex-wget:6
+msgid "Your dowloading has been cancelled about your file"
+msgstr "La descàrrega del fitxer ha sigut cancel·lada:"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:7
+#: ../install-files/usr/bin/zero-lliurex-axel:7
+msgid "Your URL don't exists, imposible to download the file"
+msgstr "La url no existix, impossible descarregar el fitxer"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:8
+#: ../install-files/usr/bin/zero-lliurex-axel:8
+#: ../install-files/usr/bin/zero-reinstall:12
+#: ../install-files/usr/bin/zero-reinstall-list:11
+msgid "OK"
+msgstr "Accepta"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:9
+#: ../install-files/usr/bin/zero-lliurex-axel:9
+msgid "Cancel"
+msgstr "Cancel·la"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:10
+#: ../install-files/usr/bin/zero-lliurex-axel:10
+msgid "Downloading"
+msgstr "Descarregant"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:11
+#: ../install-files/usr/bin/zero-lliurex-axel:11
+msgid "from"
+msgstr "de"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:12
+#: ../install-files/usr/bin/zero-lliurex-axel:12
+msgid "at"
+msgstr "a"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:13
+#: ../install-files/usr/bin/zero-lliurex-axel:13
+msgid "in"
+msgstr "en"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:14
+#: ../install-files/usr/bin/zero-lliurex-axel:14
+msgid "exists, you have to delete it before if you want to download it again"
+msgstr "existix, heu d'esborrar-ho abans, si voleu tornar a descarregar-ho"
+
+#: ../install-files/usr/bin/zero-lliurex-wget:12
+msgid "Cheking net parameters to download "
+msgstr "Testejant els paràmetres de la xarxa per a descarregar "
+
+#: ../install-files/usr/bin/zero-lliurex-wget:13
+#: ../install-files/usr/bin/zero-reinstall:11
+msgid ""
+"Please review your repositories and reinstall it again .If you can't resolve "
+"the problem please contact with Lliurex Team at http://mestreacasa.gva.es/"
+"web/lliurex/forums"
+msgstr ""
+"Reviseu els vostres orígens de programari i instal·leu-lo altra vegada. Si "
+"vos trobeu en problemes podeu contactar amb l'equip LliureX acíhttp://"
+"mestreacasa.gva.es/web/lliurex/forums"
+
+#: ../install-files/usr/bin/zero-reinstall-list:4
+msgid ""
+"Some packages aren't in your repositories, and they aren't installed, you "
+"can see it in"
+msgstr ""
+"Alguns paquets no estan als repositoris i no han sigut instal·lats, pots "
+"vore-ho ací:"
+
+#: ../install-files/usr/bin/zero-reinstall-list:5
+msgid "Please review your repositories and reinstall it again ."
+msgstr "Reviseu els vostres orígens de programari i instal·leu-lo altra vegada"
+
+#: ../install-files/usr/bin/zero-reinstall-list:6
+msgid ""
+"If you can't resolve the problem please contact with Lliurex Team at http://"
+"mestreacasa.gva.es/web/lliurex/forums"
+msgstr ""
+"Si vos trobeu en problemes podeu contactar amb l'equip LliureX acíhttp://"
+"mestreacasa.gva.es/web/lliurex/forums"
+
+#: ../install-files/usr/bin/zero-repos-update:5
+msgid "Zero-Lliurex-Update has been updated your repositories info"
+msgstr ""
+"zero-repos-update» ha actualitzat la informació del programari disponible "
+"als teus repositoris"
+
+#: ../install-files/usr/bin/zero-repos-update:6
+msgid "Updating Repositories info"
+msgstr "S'està actualitzant la informació dels repositoris"
+
+#: ../install-files/usr/bin/zero-testnet:5
+msgid "Testing connection to WWW............"
+msgstr "Testejant la connexió a Internet"
+
+msgid ""
+"Impossible to install $2, it dont exists in your repositories, abort zero-"
+"installer command"
+msgstr "No s'ha pogut instal·lar $2. El paquet no s'ha trobat als repositoris"
+
+msgid " dependences have not been configured"
+msgstr " No s'han configurat les dependencies"
+
+#~ msgid "please keep calm......... "
+#~ msgstr "un moment per favor......... "
