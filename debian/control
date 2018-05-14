@@ -1,0 +1,28 @@
+Source: zero-center
+Section: admin
+Priority: optional
+Maintainer: Equipo LliureX <lliurex@gva.es>
+Uploaders: Angel Berlanas Vicente <lliurex_devel2@edu.gva.es>, Raul Rodrigo Segura <lliurex_devel3@edu.gva.es>, Alfons Lloret Sananton <lliurex_devel5@edu.gva.es>, Enrique Medina Gremaldos <lliurex_devel4@edu.gva.es>, David Montalva Furio <montalva_dav@gva.es>, Hector Garcia Huerta <lliurex_devel1@edu.gva.es>
+Build-Depends: debhelper (>= 7.0), librsvg2-bin, llxcfg-dev (>= 1:10.09.20), n4d-dev
+Standards-Version: 3.9.5
+
+Package: zero-center
+Architecture: all
+Depends: ${misc:Depends}, zero-center-common, n4d(>= 0.105), n4d-lliurex-base, python, libnotify-bin, python-llxnet, python-cairo
+Description: Lliurex control center
+ Lliurex control center is a gtk frontend that enables user 
+ to administrate a lliurex based system. 
+ Its extensible through new scripts.
+
+Package: zero-dev
+Architecture: all
+Depends: ${misc:Depends}, llxcfg-scripts-common (>= 1:10.09.20), llxcfg-dev (>= 1:10.09.20)
+Description: zero-center/Lliurex control center helper program
+ Helper program to integrate applications in zero-center
+ 
+Package: zero-center-common
+Architecture: all
+Depends: ${misc:Depends}
+Description: zero-center common files
+ Package containing basic zero-center files
+
