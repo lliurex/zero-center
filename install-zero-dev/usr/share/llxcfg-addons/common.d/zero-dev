@@ -1,8 +1,0 @@
-# llxcfg-zerodev #
-# -------------- #
-
-ZDEV_BASEDIR="/usr/share/zero-center"
-ZDEV_APPDIR="$ZDEV_BASEDIR/applications"
-ZDEV_ZMDDIR="$ZDEV_BASEDIR/zmds"
-ZDEV_APPEXT="app"
-ZDEV_ZMDEXT="zmd"
