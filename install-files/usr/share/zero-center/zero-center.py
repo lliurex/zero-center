@@ -1140,12 +1140,16 @@ class ZeroCenter:
 	
 	
 	def app_clicked(self,widget,app):
-	
-		if  self.client.get_variable("","VariablesManager","MASTER_SERVER_IP"):
-			if app["ID"] in self.blacklist:
-				result = self.open_dialog("Warning",_("We are in a center model and therefore should install this service on the master \n server to be accessible from any computer in the center, whether to continue \n with the installation on this computer the service is only available on computers \n that are in the internal network of this server."),True)
-				if result == Gtk.ResponseType.CANCEL:
-					return -1
+
+		try:
+			if  self.client.get_variable("","VariablesManager","MASTER_SERVER_IP"):
+				if app["ID"] in self.blacklist:
+					result = self.open_dialog("Warning",_("We are in a center model and therefore should install this service on the master \n server to be accessible from any computer in the center, whether to continue \n with the installation on this computer the service is only available on computers \n that are in the internal network of this server."),True)
+					if result == Gtk.ResponseType.CANCEL:
+						return -1
+		except:
+			# n4d is not alive. Let's pass this for now 
+			pass
 
 		if app["ID"] in self.configured_apps:
 			ret=self.open_dialog("Warning",_("<b>%s</b> is already configured. Do you want to execute it again?")%self.get_name(app),True)
@@ -1186,6 +1190,8 @@ class ZeroCenter:
 					except:
 						txt="Executing %s"%app["Name"]
 					self.progress_label.set_text(txt)
+					self.progress_label.set_max_width_chars(32)
+					self.progress_label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
 					self.progress_label.show()
 					self.mprocess_app_name=app["Name"]
 					blocked=True
