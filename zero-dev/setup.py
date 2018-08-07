@@ -16,7 +16,7 @@ if __name__ == '__main__':
           license='GPL3',
           platforms='UNIX',
           packages=['edupals.zerocenter'],
-          package_dir={'edupals.zerocenter':'src_debhelper'},
+          package_dir={'edupals.zerocenter':'zero-dev/src_debhelper'},
           scripts=['bin/dh_zeroinstaller'],
-          data_files=[('/usr/share/perl5/Debian/Debhelper/Sequence/', ['Sequence/zero.pm'])]
+          data_files=[('/usr/share/perl5/Debian/Debhelper/Sequence/', ['zero-dev/Sequence/zero.pm'])]
          )
