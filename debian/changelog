@@ -1,3 +1,39 @@
+zero-center (1:2.20.2) xenial; urgency=medium
+
+  * Fix center model po chain
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 23 Jul 2018 12:00:11 +0200
+
+zero-center (1:2.20.1) xenial; urgency=high
+
+  * Fixed syntax error
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 29 Jun 2018 11:53:11 +0200
+
+zero-center (1:2.20) xenial; urgency=high
+
+  * Try passing master_server_ip check in case n4d is not alive
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 29 Jun 2018 10:37:23 +0200
+
+zero-center (1:2.19) xenial; urgency=high
+
+  * Adding ellipsize to zero-center
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 27 Jun 2018 13:32:40 +0200
+
+zero-center (1:2.18) xenial; urgency=medium
+
+  * Fixed control file
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Thu, 31 May 2018 12:02:32 +0200
+
+zero-center (1:2.17) xenial; urgency=medium
+
+  * Added resources category
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Wed, 16 May 2018 13:22:34 +0200
+
 zero-center (1:2.16) xenial; urgency=medium
 
   * Fix services category
