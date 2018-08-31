@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+import os
+from shutil import move
+from devscripts import control
+from edupals.zerocenter.zerocenterhelper import ZeroCenterDH
+
+def main():
+    zeroinstaller = ZeroCenterDH()
+    if os.path.exists('debian/control'):
+        control_handler = control.Control('debian/control')
+        packages = [e['Package'] for e in control_handler.paragraphs if 'Package' in e]
+        source = [e['Source'] for e in control_handler.paragraphs if 'Source' in e][0]
+        if source in packages:
+            if os.path.exists('debian/zero'):
+                move('debian/zero', 'debian/{0}.zero'.format(source))
+        for pkg in packages:
+            file_helper = "debian/{pkg}.zero".format(pkg=pkg)
+            if os.path.exists(file_helper):
+                files_to_process = []
+                with open(file_helper) as file_descriptor:
+                    files_to_process = file_descriptor.readlines()
+                for file_path in files_to_process:
+                    zeroinstaller.write_pkexec_files(pkg, file_path.strip())
+                    zeroinstaller.install_files(pkg, file_path.strip())
+
+if __name__ == '__main__':
+    main()
