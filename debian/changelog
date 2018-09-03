@@ -1,3 +1,9 @@
+zero-center (1:2.33) bionic; urgency=medium
+
+  * Add build depends
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Mon, 03 Sep 2018 14:35:07 +0200
+
 zero-center (1:2.32) bionic; urgency=medium
 
   * Added dependency with poinstaller
