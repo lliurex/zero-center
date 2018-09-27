@@ -10,10 +10,10 @@
 #export DH_VERBOSE=1
 
 %:
-	dh $@ --with i18n,n4d-vars
+	dh $@ --with i18n,n4d-vars,python3 --buildsystem pybuild
 
 override_dh_auto_install:
-	dh_auto_install
+	dh_auto_install -O--buildsystem=pybuild
 	python3 zero-dev/setup.py install --root $(CURDIR)/debian/zero-dev --prefix=/usr
 	python3 zero-dev/setup.py clean --all
 

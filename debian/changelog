@@ -1,3 +1,9 @@
+zero-center (1:2.33.1) bionic; urgency=medium
+
+  * Fix build system
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Thu, 27 Sep 2018 09:48:03 +0200
+
 zero-center (1:2.33) bionic; urgency=medium
 
   * Add build depends
