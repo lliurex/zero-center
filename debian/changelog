@@ -1,3 +1,9 @@
+zero-center (1:2.33.3) bionic; urgency=medium
+
+  * Add more dependency
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Fri, 28 Sep 2018 13:56:31 +0200
+
 zero-center (1:2.33.2) bionic; urgency=medium
 
   * Fix correct path for library
