@@ -13,7 +13,7 @@
 
 override_dh_auto_install:
 	dh_auto_install -O--buildsystem=pybuild
-	python3 zero-dev/setup.py install --root $(CURDIR)/debian/zero-dev --prefix=/usr
+	python3 zero-dev/setup.py install --install-layout=deb --root $(CURDIR)/debian/zero-dev --prefix=/usr
 	python3 zero-dev/setup.py clean --all
 
 override_dh_install:

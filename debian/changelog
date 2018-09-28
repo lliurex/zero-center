@@ -1,3 +1,9 @@
+zero-center (1:2.33.2) bionic; urgency=medium
+
+  * Fix correct path for library
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Fri, 28 Sep 2018 12:29:58 +0200
+
 zero-center (1:2.33.1) bionic; urgency=medium
 
   * Fix build system
