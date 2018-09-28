@@ -9,10 +9,10 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 %:
-	dh $@ --with llxsrc,i18n,n4d-vars,python3 --buildsystem pybuild
+	dh $@ --with llxsrc,i18n,n4d-vars
 
 override_dh_auto_install:
-	dh_auto_install -O--buildsystem=pybuild
+	dh_auto_install 
 	python3 zero-dev/setup.py install --no-compile --install-layout=deb --root $(CURDIR)/debian/zero-dev --prefix=/usr
 	python3 zero-dev/setup.py clean --all
 
