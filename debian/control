@@ -15,13 +15,13 @@ Description: Lliurex control center
 
 Package: zero-dev
 Architecture: all
-Depends: ${misc:Depends}, python3-pkexec-debhelper 
+Depends: ${misc:Depends}, python3-pkexec-debhelper, python3, devscripts
 Description: zero-center/Lliurex control center helper program
  Helper program to integrate applications in zero-center
  
 Package: zero-center-common
 Architecture: all
-Depends: ${misc:Depends}, python3
+Depends: ${misc:Depends}
 Description: zero-center common files
  Package containing basic zero-center files
 
