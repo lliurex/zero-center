@@ -21,7 +21,7 @@ Description: zero-center/Lliurex control center helper program
  
 Package: zero-center-common
 Architecture: all
-Depends: ${misc:Depends}
+Depends: ${misc:Depends}, python3
 Description: zero-center common files
  Package containing basic zero-center files
 
