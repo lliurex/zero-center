@@ -55,32 +55,33 @@ class ZeroCenterDH(object):
                 with open(app) as file_descriptor:
                     file_content = '[root]\n'+ file_descriptor.read()
                     app_description.read_string(file_content)
-                if app_description.get('root', 'Using') == 'pkexec':
-                    pkexec_process = {}
-                    pkexec_process['prefix'] = 'net.lliurex.zero-center.' + app_description.get('root','Name')
-                    pkexec_process['cmd'] = os.path.join('/',self.zmdfolder, app_description.get('root','ScriptPath'))
-                    pkexec_process['nameaction'] = 'launcher'
-                    pkexec_process['icon'] = app_description.get('root', 'Icon')
-                    pkexec_process['default_auth'] = {'any':'no', 'inactive':'no', 'active': 'no'}
-                    pkexec_process['auths'] = []
-                    if app_description.has_option('root', 'Groups'):
-                        auth = {'type':'group','members':[], 'any': 'yes', 'inactive':'yes', 'active':'yes' }
-                        for group in list(filter(None,app_description.get('root','Groups').split(';'))):
-                            auth['members'].append(group)
-                        if auth['members']:
-                            pkexec_process['auths'].append(auth)
+                if app_description.has_option('root', 'Using'):
+                    if app_description.get('root', 'Using') == 'pkexec':
+                        pkexec_process = {}
+                        pkexec_process['prefix'] = 'net.lliurex.zero-center.' + app_description.get('root','Name')
+                        pkexec_process['cmd'] = os.path.join('/',self.zmdfolder, app_description.get('root','ScriptPath'))
+                        pkexec_process['nameaction'] = 'launcher'
+                        pkexec_process['icon'] = app_description.get('root', 'Icon')
+                        pkexec_process['default_auth'] = {'any':'no', 'inactive':'no', 'active': 'no'}
+                        pkexec_process['auths'] = []
+                        if app_description.has_option('root', 'Groups'):
+                            auth = {'type':'group','members':[], 'any': 'yes', 'inactive':'yes', 'active':'yes' }
+                            for group in list(filter(None,app_description.get('root','Groups').split(';'))):
+                                auth['members'].append(group)
+                            if auth['members']:
+                                pkexec_process['auths'].append(auth)
 
-                    if app_description.has_option('root', 'Users'):
-                        auth = {'type':'users','members':[], 'any': 'yes', 'inactive':'yes', 'active':'yes' }
-                        for group in list(filter(None,app_description.get('root','Users').split(';'))):
-                            auth['members'].append(group)
-                        if auth['members']:
-                            pkexec_process['auths'].append(auth)
+                        if app_description.has_option('root', 'Users'):
+                            auth = {'type':'users','members':[], 'any': 'yes', 'inactive':'yes', 'active':'yes' }
+                            for group in list(filter(None,app_description.get('root','Users').split(';'))):
+                                auth['members'].append(group)
+                            if auth['members']:
+                                pkexec_process['auths'].append(auth)
 
-                    if not pkexec_process['auths']:
-                        del(pkexec_process['auths'])
-                    if not pkexec_process['prefix'] in [x['prefix'] for x in pkexec_description]:
-                        pkexec_description.append(pkexec_process)
+                        if not pkexec_process['auths']:
+                            del(pkexec_process['auths'])
+                        if not pkexec_process['prefix'] in [x['prefix'] for x in pkexec_description]:
+                            pkexec_description.append(pkexec_process)
 
         with open('debian/{pkg}.pkexec'.format(pkg=pkg), 'w') as file_descriptor:
             json.dump(pkexec_description, file_descriptor, indent=4)
