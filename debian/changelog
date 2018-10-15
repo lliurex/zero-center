@@ -1,3 +1,9 @@
+zero-center (1:2.33.5) bionic; urgency=medium
+
+  * Fixed bug when searching for the key Using in app file
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 15 Oct 2018 10:32:18 +0200
+
 zero-center (1:2.33.4) bionic; urgency=medium
 
   * Add more dependencies
