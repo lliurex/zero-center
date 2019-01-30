@@ -1,3 +1,9 @@
+zero-center (1:2.34.1) bionic; urgency=high
+
+  * Fixed search box and separators width
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Wed, 30 Jan 2019 10:14:56 +0100
+
 zero-center (1:2.34) bionic; urgency=high
 
   * Upstream changes from xenial
