@@ -465,6 +465,20 @@ class ZeroCenter:
 		
 		css = """
 		
+		
+
+
+		/*@define-color arc-blue #3a87e2;*/
+		@define-color arc-blue #0062f5;
+		@define-color arc-blue-light #4accf5;
+		@define-color arc-black #2d323d;
+		@define-color arc-red #000000;
+		@define-color arc-blue-hover #629de2;
+		@define-color arc-blue-active #3aa3e2;
+		@define-color default-grey #666666;
+
+
+		
 		#BLACK {
 			background-image: -gtk-gradient (linear,	left top, left bottom, from (#1a1a1a),  to (#616161));
 			
@@ -530,9 +544,38 @@ class ZeroCenter:
 			color: rgba(255,255,255,0.8);
 		}
 		
-		#PEPITO {
+
+		.entry 
+		{
+			color: rgba(255,255,255,0.8);
 			border: none;
+			/*border-radius: 5px;*/
+			background-color: @arc-blue;
+			border-bottom: 1px solid #888888;
+			padding: 4px;
+			background: #2d2d2d;
+			
+			/*border-bottom: 2px solid transparent;*/
+	
 		}
+		
+		.entry:selected
+		{
+			color: white;
+			background: @arc-blue;
+
+		}
+		
+		.entry:focus
+		{
+			color: rgba(255,255,255,0.8);
+			border-bottom: 1px solid rgba(255,255,255,1);
+			/*border-bottom: 2px solid rgba(0,0,0,0);*/
+			/*background-color: transparent;*/
+		
+	
+		}
+
 		
 		"""
 		
