@@ -1,3 +1,9 @@
+zero-center (1:2.34) bionic; urgency=high
+
+  * Upstream changes from xenial
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 30 Jan 2019 09:53:04 +0100
+
 zero-center (1:2.33.5) bionic; urgency=medium
 
   * Fixed bug when searching for the key Using in app file
