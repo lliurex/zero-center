@@ -1171,6 +1171,7 @@ class ZeroCenter:
 		label.set_name("WHITE-15")
 		expander=Gtk.HSeparator()
 		expander.set_margin_right(15)
+		expander.set_valign(Gtk.Align.CENTER)
 		tmpbox.set_margin_left(10)
 		tmpbox.set_margin_top(5)
 		tmpbox.pack_start(img,False,False,0)
