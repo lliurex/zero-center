@@ -1,3 +1,9 @@
+zero-center (1:2.34.2) bionic; urgency=high
+
+  * Fixed search box for sure this time
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 06 Feb 2019 10:30:31 +0100
+
 zero-center (1:2.34.1) bionic; urgency=high
 
   * Fixed search box and separators width
