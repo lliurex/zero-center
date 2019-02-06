@@ -385,11 +385,22 @@ class ZeroCenter:
 		self.add_categories_to_window("All")
 		self.set_css_info()
 		
+		self.window.connect("key-press-event",self.on_key_press_event)
+		
 		self.window.show()
 		GObject.threads_init()
 		Gtk.main()
 		
 	#def start_gui
+	
+	
+	def on_key_press_event(self,window,event):
+		
+		ctrl=(event.state | Gdk.ModifierType.CONTROL_MASK)
+		if ctrl and event.keyval == Gdk.KEY_f:
+			self.search_entry.grab_focus()
+		
+	#def on_key_press_event	
 	
 	
 	def entry_changed(self,widget):
