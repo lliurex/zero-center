@@ -1,3 +1,9 @@
+zero-center (1:2.39) bionic; urgency=high
+
+  * Added missing dependency
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 25 Feb 2019 13:48:58 +0100
+
 zero-center (1:2.38) bionic; urgency=high
 
   * Adding missing dirs
