@@ -1,3 +1,9 @@
+zero-center (1:2.39.1) bionic; urgency=high
+
+  * Fixed f keypress
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 15 Mar 2019 11:51:57 +0100
+
 zero-center (1:2.39) bionic; urgency=high
 
   * Added missing dependency
