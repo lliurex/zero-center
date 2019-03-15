@@ -396,7 +396,7 @@ class ZeroCenter:
 	
 	def on_key_press_event(self,window,event):
 		
-		ctrl=(event.state | Gdk.ModifierType.CONTROL_MASK)
+		ctrl=(event.state & Gdk.ModifierType.CONTROL_MASK)
 		if ctrl and event.keyval == Gdk.KEY_f:
 			self.search_entry.grab_focus()
 		
