@@ -1,3 +1,9 @@
+zero-center (1:2.39.2) bionic; urgency=medium
+
+  * Dummy upgrade
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Tue, 14 May 2019 14:30:32 +0200
+
 zero-center (1:2.39.1) bionic; urgency=high
 
   * Fixed f keypress
