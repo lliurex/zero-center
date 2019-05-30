@@ -1,3 +1,9 @@
+zero-center (1:2.39.3) bionic; urgency=medium
+
+  * Import gtk when needed only
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 30 May 2019 12:22:46 +0200
+
 zero-center (1:2.39.2) bionic; urgency=medium
 
   * Dummy upgrade
