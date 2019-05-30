@@ -14,13 +14,14 @@ import subprocess
 import json
 
 try:
-	import gi
-	gi.require_version('Gtk', '3.0')
-	gi.require_version('PangoCairo', '1.0')
-	from gi.repository import Gtk, Gdk, GObject, GLib, PangoCairo, Pango
-	
+	if os.environ["XDG_SESSION_TYPE"]=="x11":
+		import gi
+		gi.require_version('Gtk', '3.0')
+		gi.require_version('PangoCairo', '1.0')
+		from gi.repository import Gtk, Gdk, GObject, GLib, PangoCairo, Pango
 except Exception as e:
-	print e
+	pass
+	#print e
 	#zero-server-wizard initialization forces me to do this
 
 import signal
@@ -1530,7 +1531,6 @@ def check_root():
 
 if __name__=="__main__":
 	
-
 	zc=ZeroCenter()
 	zc.drawing_mode=True
 
