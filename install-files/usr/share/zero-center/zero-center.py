@@ -305,6 +305,22 @@ class ZeroCenter:
 	
 	def create_user_env(self):
 		
+		def fallback_lang():
+			
+			try:
+				self.lang=os.environ["LANG"].replace(".UTF-8","")
+				self.language=[]
+				self.language.append(self.lang)
+				self.lang=self.lang.split("_")[0]
+				if "es_ES" in self.language and "es" not in self.language:
+					self.language.insert(self.language.index("es_ES")+1,"es")
+				if "ca_ES@valencia" in self.language:
+					self.language.insert(self.language.index("ca_ES@valencia"),"qcv")
+				
+			except:
+				self.lang="en"
+				self.language=["en"]
+		
 		try:
 			self.lang=os.environ["LANGUAGE"].replace(".UTF-8","").split(":")[0]
 			self.language=os.environ["LANGUAGE"].replace(".UTF-8","").split(":")
@@ -315,16 +331,19 @@ class ZeroCenter:
 			if "ca_ES@valencia" in self.language:
 				self.language.insert(self.language.index("ca_ES@valencia"),"qcv")
 		except:
-			try:
-				self.lang=os.environ["LANG"].replace(".UTF-8","")
-				self.language=[]
-				self.language.append(self.lang)
-				self.lang=self.lang.split("_")[0]
-				
-			except:
-				self.lang="en"
+			fallback_lang()
 
+
+		print(self.lang)
+		print(self.language)
+
+		if self.language==['']:
+			fallback_lang()
 			
+			
+		print("LANG:%s"%self.lang)
+		print("LANGUAGE:%s"%self.language)
+		
 		groups={}
 		
 		for item in grp.getgrall():
