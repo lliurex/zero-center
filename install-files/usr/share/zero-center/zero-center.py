@@ -309,6 +309,7 @@ class ZeroCenter:
 			
 			try:
 				self.lang=os.environ["LANG"].replace(".UTF-8","")
+				self.lang=self.lang.replace(".utf8","")
 				self.language=[]
 				self.language.append(self.lang)
 				self.lang=self.lang.split("_")[0]
@@ -334,16 +335,9 @@ class ZeroCenter:
 			fallback_lang()
 
 
-		print(self.lang)
-		print(self.language)
-
 		if self.language==['']:
 			fallback_lang()
 			
-			
-		print("LANG:%s"%self.lang)
-		print("LANGUAGE:%s"%self.language)
-		
 		groups={}
 		
 		for item in grp.getgrall():
