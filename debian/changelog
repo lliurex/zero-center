@@ -1,3 +1,9 @@
+zero-center (1:2.39.5) bionic; urgency=medium
+
+  * Adding .utf8 support
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 25 Jun 2019 13:02:44 +0200
+
 zero-center (1:2.39.4) bionic; urgency=medium
 
   * Adding fallback language
