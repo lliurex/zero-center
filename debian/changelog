@@ -1,3 +1,9 @@
+zero-center (1:2.40) bionic; urgency=medium
+
+  * Added lost ssh support
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 18 Jul 2019 09:06:23 +0200
+
 zero-center (1:2.39.5) bionic; urgency=medium
 
   * Adding .utf8 support
