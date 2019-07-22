@@ -14,7 +14,8 @@ import subprocess
 import json
 
 try:
-	if ("XDG_SESSION_TYPE" in os.environ and os.environ["XDG_SESSION_TYPE"]=="x11") or ("SSH_CLIENT" in os.environ and os.environ["SSH_CLIENT"]!=""):
+	#if ("XDG_SESSION_TYPE" in os.environ and os.environ["XDG_SESSION_TYPE"]=="x11") or ("SSH_CLIENT" in os.environ and os.environ["SSH_CLIENT"]!=""):
+	if True:
 		import gi
 		gi.require_version('Gtk', '3.0')
 		gi.require_version('PangoCairo', '1.0')
