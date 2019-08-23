@@ -364,7 +364,10 @@ class ZeroCenter:
 	
 	def start_gui(self):
 		
-		
+
+		self.collapsed_image="/usr/share/icons/breeze-dark/actions/16/arrow-left.svg"
+		self.expanded_image="/usr/share/icons/breeze-dark/actions/16/arrow-down.svg"
+
 		self.icon_theme=Gtk.IconTheme()
 		self.icon_theme.set_custom_theme("lliurex-neu")
 		
@@ -543,7 +546,19 @@ class ZeroCenter:
 			
 		}
 		
+
+		#TRANSPARENTBUTTON{
+			padding: 3px 3px;
+			border:none;
+			border-radius: 50px;
+			background-image: none;
+			background-color: transparent;
+		}
 		
+		
+		#TRANSPARENTBUTTON:hover{
+			box-shadow: 0px 0px 5px rgba(255,255,255,0.8);
+		}
 		
 		#APPBUTTON{
 
@@ -1209,11 +1224,18 @@ class ZeroCenter:
 		tmpbox.pack_start(img,False,False,0)
 		tmpbox.pack_start(label,False,False,10)
 		tmpbox.pack_start(expander,True,True,0)
-		expand_button=Gtk.Button(_("Hide"))
+		expand_button=Gtk.Button()
+		expand_button.set_valign(Gtk.Align.CENTER)
+		if os.path.exists(self.expanded_image):
+			expanded_image=Gtk.Image.new_from_file(self.expanded_image)
+			expand_button.set_name("TRANSPARENTBUTTON")
+		else:
+			expanded_image=Gtk.Image.new_from_stock("gtk-go-down",Gtk.IconSize.BUTTON)
+		expand_button.set_image(expanded_image)
+		expand_button.show_all()
 		expand_button.connect("clicked",self.category_label_clicked,r)
-		expand_button.set_margin_right(15)
-		tmpbox.pack_start(expand_button,False,False,5)
-		
+		expand_button.set_margin_right(18)
+		tmpbox.pack_start(expand_button,False,True,0)
 		tmpbox.show_all()
 		self.content_hbox.pack_start(tmpbox,False,False,5)		
 		
@@ -1224,9 +1246,19 @@ class ZeroCenter:
 		state=revealer.get_reveal_child()
 		revealer.set_reveal_child(not state)
 		if state:
-			widget.set_label("Show")
+			if os.path.exists(self.collapsed_image):
+				image=Gtk.Image.new_from_file(self.collapsed_image)
+			else:
+				image=Gtk.Image.new_from_stock("gtk-go-back",Gtk.IconSize.BUTTON)
+			
+			widget.set_image(image)
 		else:
-			widget.set_label("Hide")
+			if os.path.exists(self.expanded_image):
+				image=Gtk.Image.new_from_file(self.expanded_image)
+			else:
+				image=Gtk.Image.new_from_stock("gtk-go-down",Gtk.IconSize.BUTTON)
+			widget.set_image(image)
+			
 		
 	#def category_label_clicked
 	
