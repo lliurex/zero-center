@@ -76,6 +76,15 @@ msgstr "<b>%s</b> esta siendo ejecutado. Por favor espera hasta que termine."
 msgid "<b>%s</b> is being executed. Are you sure you want to exit?"
 msgstr "<b>%s</b> esta siendo ejecutado. ¿Estás seguro de querer salir?"
 
+#: ../install-files/usr/share/zero-center/zero-center.py
+msgid "Hide"
+msgstr "Ocultar"
+
+#: ../install-files/usr/share/zero-center/zero-center.py
+msgid "Show"
+msgstr "Mostrar"
+
+
 #: ../install-files/usr/bin/zero-installer:5
 #: ../install-files/usr/bin/zero-reinstall:4
 msgid "Installing"

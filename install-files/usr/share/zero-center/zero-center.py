@@ -255,7 +255,7 @@ class ZeroCenter:
 				
 				
 		except Exception as e:
-			print e
+			print(e)
 			pass
 			
 	#def get_states
@@ -1042,7 +1042,7 @@ class ZeroCenter:
 					return True
 			
 		except Exception as e:
-			print e
+			print(e)
 			pass
 			
 		if verbose:
@@ -1168,14 +1168,20 @@ class ZeroCenter:
 						
 						hbox.add(child)
 						count+=1
-						
+		
 			if count!=0:
 				hbox.show_all()
+				r=Gtk.Revealer()
 				if once:
-					self.add_label(self.get_translation(category),icon)
+					self.add_label(self.get_translation(category),icon,r)
 					once=False
+				
 				hbox.set_margin_left(20)
-				self.content_hbox.pack_start(hbox,True,True,5)
+				
+				r.add(hbox)
+				r.set_reveal_child(True)
+				r.show_all()
+				self.content_hbox.pack_start(r,True,True,5)
 		
 		if len(self.content_hbox.get_children()) > 0:
 			self.content_hbox.get_children()[-1].set_margin_bottom(10)
@@ -1185,7 +1191,7 @@ class ZeroCenter:
 	
 	
 	
-	def add_label(self,label_name,icon_name=None):
+	def add_label(self,label_name,icon_name,r):
 		
 		if icon_name==None:
 			icon_name="system"
@@ -1202,12 +1208,27 @@ class ZeroCenter:
 		tmpbox.set_margin_top(5)
 		tmpbox.pack_start(img,False,False,0)
 		tmpbox.pack_start(label,False,False,10)
-		tmpbox.pack_start(expander,True,True,5)
+		tmpbox.pack_start(expander,True,True,0)
+		expand_button=Gtk.Button(_("Hide"))
+		expand_button.connect("clicked",self.category_label_clicked,r)
+		expand_button.set_margin_right(15)
+		tmpbox.pack_start(expand_button,False,False,5)
+		
 		tmpbox.show_all()
 		self.content_hbox.pack_start(tmpbox,False,False,5)		
 		
 	#def add_label
 	
+	def category_label_clicked(self,widget,revealer):
+		
+		state=revealer.get_reveal_child()
+		revealer.set_reveal_child(not state)
+		if state:
+			widget.set_label("Show")
+		else:
+			widget.set_label("Hide")
+		
+	#def category_label_clicked
 	
 	def app_clicked(self,widget,app):
 
@@ -1404,7 +1425,7 @@ class ZeroCenter:
 			try:
 				self.client.set_configured(key,"ZCenterVariables",app)
 			except Exception as e:
-				print e
+				print(e)
 				
 		else:
 			print("[!] %s is not installed"%app)
@@ -1493,7 +1514,7 @@ class ZeroCenter:
 		try:
 			self.client.set_zc_message(key,"ZCenterVariables",app,text,text_es,text_qcv)
 		except Exception as e:
-			print e
+			print(e)
 			
 		sys.exit(0)
 		
@@ -1505,7 +1526,7 @@ class ZeroCenter:
 		try:
 			self.client.remove_zc_message(key,"ZCenterVariables",app)
 		except Exception as e:
-			print e
+			print(e)
 			
 		sys.exit(0)
 		
@@ -1587,12 +1608,12 @@ if __name__=="__main__":
 			try:
 				text_es=sys.argv[4]
 			except Exception as e:
-				print e
+				print(e)
 				text_es=""
 			try:
 				text_qcv=sys.argv[5]
 			except Exception as e:
-				print e
+				print(e)
 				text_qcv=""
 			
 			zc.add_zc_notification(key,app,text,text_es,text_qcv)
