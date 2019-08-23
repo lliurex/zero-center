@@ -1,3 +1,9 @@
+zero-center (1:2.44) bionic; urgency=medium
+
+  * Using image instead of text for expand/collapse category button
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 23 Aug 2019 14:06:57 +0200
+
 zero-center (1:2.43) bionic; urgency=medium
 
   * Added show/hide button for every category
