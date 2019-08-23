@@ -1,3 +1,9 @@
+zero-center (1:2.43) bionic; urgency=medium
+
+  * Added show/hide button for every category
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 23 Aug 2019 12:30:50 +0200
+
 zero-center (1:2.42) bionic; urgency=medium
 
   * supporting ca@valencia 
