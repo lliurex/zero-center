@@ -1283,7 +1283,7 @@ class ZeroCenter:
 		
 			cmd=""
 				
-			if "Using" in app:
+			if "Using" in app and os.environ["USER"]!="root":
 				cmd+=app["Using"].strip(" ").strip("\n") +" "
 					
 			cmd+=self.app_parser.ZMD_PATH + app["ScriptPath"]
