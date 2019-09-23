@@ -1,3 +1,9 @@
+zero-center (1:2.45) bionic; urgency=medium
+
+  * skipping pkexec usage if user is root
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 23 Sep 2019 10:02:10 +0200
+
 zero-center (1:2.44) bionic; urgency=medium
 
   * Using image instead of text for expand/collapse category button
