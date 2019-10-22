@@ -1137,6 +1137,24 @@ class ZeroCenter:
 
 						if search_txt not in app["ID"] and search_txt not in self.get_translation(app["Category"]).lower() and search_txt not in self.get_name(app).lower() and len(search_txt)>2:
 							continue
+						
+							
+						if "Replaces" in app:
+							continue
+							
+						if "ReplacedWith" in app and app["configured"]==1:
+						
+							app_found=False
+							for cat in self.app_parser.apps:
+								for new_app in self.app_parser.apps[cat]:
+									if new_app["Name"]==app["ReplaceWith"]:
+										app_found=True
+										app=new_app
+										break
+								if app_found:
+									break
+							
+							
 						button=Gtk.Button()
 						button.set_name("APPBUTTON")
 						button.set_size_request(235,110)
@@ -1342,13 +1360,7 @@ class ZeroCenter:
 					
 					try:
 						self.get_states()
-			
-						for cat in self.app_parser.apps:
-							for item in self.app_parser.apps[cat]:
-								item["gtk_button"].get_child().queue_draw()
-						
-						darea=button.get_child()
-						darea.queue_draw()
+						self.add_categories_to_window("",False)
 						
 					except Exception as e:
 						pass
