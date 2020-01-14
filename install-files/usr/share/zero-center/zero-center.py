@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*
  
 
@@ -6,7 +6,8 @@ import os
 import multiprocessing
 import time
 import random
-import xmlrpclib
+import xmlrpc.client
+import ssl
 import cairo
 import grp
 import sys
@@ -182,8 +183,8 @@ class AppParser:
 class ZeroCenter:
 	
 	def __init__(self):
-		
-		self.client=xmlrpclib.ServerProxy("https://localhost:9779")
+		context=ssl._create_unverified_context()
+		self.client = xmlrpc.client.ServerProxy('https://127.0.0.1:9779',context=context,allow_none=True)
 		self.create_user_env()
 		self.categories_parser=CategoriesParser()
 		self.app_parser=AppParser()
@@ -469,7 +470,7 @@ class ZeroCenter:
 		else:
 			self.scrolling=False
 			spaces=90-len(tmp_text)
-			space="".join([" "]*(spaces/2))
+			space="".join([" "]*int(spaces/2))
 			tmp_text=space+tmp_text+space
 			
 		
@@ -492,7 +493,7 @@ class ZeroCenter:
 	
 	def set_css_info(self):
 		
-		css = """
+		css = b"""
 		
 		
 
@@ -1061,8 +1062,8 @@ class ZeroCenter:
 			pass
 			
 		if verbose:
-			print "NOT ALLOWED"
-			print "\t[!] App groups: ",sorted(groups)
+			print("NOT ALLOWED")
+			print("\t[!] App groups: ",sorted(groups))
 		return False
 		
 	#def check_app_groups
@@ -1129,7 +1130,7 @@ class ZeroCenter:
 			hbox.set_selection_mode(Gtk.SelectionMode.NONE)
 			count=0
 			if category in self.app_parser.apps:
-				for app in sorted(self.app_parser.apps[category]):
+				for app in sorted(self.app_parser.apps[category],key=lambda x:"Name",reverse=False):
 					
 					if self.check_app_groups(app,verbose):
 
@@ -1353,7 +1354,7 @@ class ZeroCenter:
 		
 		if not process.is_alive():
 			
-			print "[ZeroCenter] %s has ended"%app["ID"]
+			print("[ZeroCenter] %s has ended"%app["ID"])
 			
 			if "Service" in app:
 				if app["Service"].lower()=="true":
