@@ -1148,7 +1148,7 @@ class ZeroCenter:
 							app_found=False
 							for cat in self.app_parser.apps:
 								for new_app in self.app_parser.apps[cat]:
-									if new_app["Name"]==app["ReplaceWith"]:
+									if new_app["Name"]==app["ReplacedWith"]:
 										app_found=True
 										app=new_app
 										break
