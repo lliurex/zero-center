@@ -1,3 +1,9 @@
+zero-center (1:2.48) bionic; urgency=medium
+
+  * Fixed type in ReplacedWith key
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 28 Feb 2020 13:29:33 +0100
+
 zero-center (1:2.47) bionic; urgency=medium
 
   * Ported code and dependencies to python3
