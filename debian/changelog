@@ -1,3 +1,9 @@
+zero-center (1:2.49) bionic; urgency=medium
+
+  * Add one-shot to fix dnsmasq entries.
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Mon, 20 Jul 2020 16:13:30 +0200
+
 zero-center (1:2.48) bionic; urgency=medium
 
   * Fixed type in ReplacedWith key
