@@ -1,3 +1,9 @@
+zero-center (1:2.50) bionic; urgency=medium
+
+  * Fix script to apply only on slave server
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Tue, 21 Jul 2020 00:39:22 +0200
+
 zero-center (1:2.49) bionic; urgency=medium
 
   * Add one-shot to fix dnsmasq entries.
