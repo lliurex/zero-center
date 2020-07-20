@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+
+from codecs import open as codecs_open
+from xmlrpc.client import ServerProxy
+import ssl
+
+with codecs_open('/etc/n4d/key','r',encoding='utf-8') as fd:
+    key = fd.readline()
+
+client = ServerProxy('https://localhost:9779',context=ssl._create_unverified_context())
+client.set_dns_master_services(key,'Dnsmasq')
