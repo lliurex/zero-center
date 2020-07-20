@@ -11,7 +11,9 @@
 			"zero-lliurex-moodle": ["moodle"],
                         "lliurex-owncloud":["owncloud"],
                         "zero-lliurex-pmb":["pmb","opac","biblioteca"],
-                        "lliurex-freeradius":[]
+                        "lliurex-freeradius":[],
+			"jitsi":["jitsi.lliurex"],
+			"lliurex-nextcloud":['nextcloud']
 		},
 		"force_update": true
 
