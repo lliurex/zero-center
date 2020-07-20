@@ -9,11 +9,12 @@
 		"description": "List of blacklisted services in slave servers",
 		"value": {
 			"zero-lliurex-moodle": ["moodle"],
-                        "lliurex-owncloud":["owncloud"],
-                        "zero-lliurex-pmb":["pmb","opac","biblioteca"],
-                        "lliurex-freeradius":[],
-			"jitsi":["jitsi.lliurex"],
-			"lliurex-nextcloud":['nextcloud']
+			"lliurex-owncloud":["owncloud"],
+            "zero-lliurex-pmb":["pmb","opac","biblioteca"],
+            "lliurex-freeradius":[],
+			"zero-lliurex-jitsi":["jitsi.lliurex"],
+			"lliurex-nextcloud":["nextcloud"],
+			"zero-lliurex-news-instaler":["news-server"]
 		},
 		"force_update": true
 
