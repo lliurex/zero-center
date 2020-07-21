@@ -6,7 +6,7 @@ case "$1" in
    configure)
    
 	n4d-modules enable-plugin /etc/n4d/conf.d/ZCenterVariables || true
-        if dpkg --compare-versions "$2" lt "1:2.50"; then
+        if dpkg --compare-versions "$2" lt "1:2.51"; then
                 cp /usr/share/zero-center/one-shots/black_list_update /etc/n4d/one-shot/
                 deb-systemd-invoke restart n4d || true
         fi

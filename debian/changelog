@@ -1,3 +1,9 @@
+zero-center (1:2.51) bionic; urgency=medium
+
+  * Typo
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Tue, 21 Jul 2020 09:09:51 +0200
+
 zero-center (1:2.50) bionic; urgency=medium
 
   * Fix script to apply only on slave server
