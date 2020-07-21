@@ -14,7 +14,7 @@
             "lliurex-freeradius":[],
 			"zero-lliurex-jitsi":["jitsi.lliurex"],
 			"lliurex-nextcloud":["nextcloud"],
-			"zero-lliurex-news-instaler":["news-server"]
+			"zero-lliurex-news-installer":["news-server"]
 		},
 		"force_update": true
 
