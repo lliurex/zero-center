@@ -1136,7 +1136,7 @@ class ZeroCenter:
 
 						search_txt=self.search_entry.get_text().lower().strip()
 
-						if search_txt not in app["ID"] and search_txt not in self.get_translation(app["Category"]).lower() and search_txt not in self.get_name(app).lower() and len(search_txt)>2:
+						if search_txt not in app["ID"] and search_txt not in self.get_translation(app["Category"]).lower() and search_txt not in self.get_name(app).lower() and len(search_txt)>1:
 							continue
 						
 							
