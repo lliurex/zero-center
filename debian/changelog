@@ -1,3 +1,9 @@
+zero-center (1:2.52) bionic; urgency=medium
+
+  * Search field now only needs 2 characters
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 22 Jul 2020 12:16:03 +0200
+
 zero-center (1:2.51) bionic; urgency=medium
 
   * Typo
