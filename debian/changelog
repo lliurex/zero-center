@@ -1,3 +1,9 @@
+zero-center (1:2.53) bionic; urgency=medium
+
+  * Fixed possible exception when looking for banners
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 05 Aug 2020 09:28:26 +0200
+
 zero-center (1:2.52) bionic; urgency=medium
 
   * Search field now only needs 2 characters
