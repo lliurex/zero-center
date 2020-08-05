@@ -772,7 +772,7 @@ class ZeroCenter:
 		package_rsrc_path=BANNER_PATH
 		img_path=package_rsrc_path+"package.png"
 		for item in os.listdir(package_rsrc_path):
-			f,ext=item.split(".")
+			f=item.split(".")[0:-1]
 			if app["Icon"] == f:
 				img_path=package_rsrc_path+item
 		
