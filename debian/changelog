@@ -1,4 +1,4 @@
-zero-center (1:2.53) bionic; urgency=medium
+zero-center (1:2.54) bionic; urgency=medium
 
   * Fixed possible exception when looking for banners
 
