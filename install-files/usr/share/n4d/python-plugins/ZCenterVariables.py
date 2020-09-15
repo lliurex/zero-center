@@ -168,7 +168,7 @@ class ZCenterVariables:
 			return True
 		
 		except Exception as e:
-			print e
+			print(e)
 			return False
 		
 	#def set_custom_text
@@ -183,7 +183,7 @@ class ZCenterVariables:
 			self.n4d_vars.set_variable("ZEROCENTER",copy.deepcopy(self.variable))
 		
 		except Exception as e:
-			print e
+			print(e)
 			return False
 		
 	#def add_pulsating_color
@@ -198,7 +198,7 @@ class ZCenterVariables:
 			self.n4d_vars.set_variable("ZEROCENTER",copy.deepcopy(self.variable))
 		
 		except Exception as e:
-			print e
+			print(e)
 			return False
 		
 	#def remove_pulsating_color
