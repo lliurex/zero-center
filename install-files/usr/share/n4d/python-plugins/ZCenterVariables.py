@@ -2,6 +2,7 @@ import time
 import copy
 
 import n4d.server.core
+import n4d.responses
 
 class ZCenterVariables:
 	
@@ -24,7 +25,7 @@ class ZCenterVariables:
 		if ret["status"]==0:
 			return ret["return"]
 		
-		return default_value
+		return n4d.responses.build_successful_call_response(default_value)
 		
 	#def get_variable
 
@@ -57,11 +58,11 @@ class ZCenterVariables:
 			self.internal_variable["messages"][app]["message"]["qcv"]=message_qcv
 			self.internal_variable["messages"][app]["message"]["ca"]=message_qcv
 			self.core.set_variable("ZEROCENTERINTERNAL",self.internal_variable)
-			return True
+			return n4d.responses.build_successful_call_response(True)
 			
 		except Exception as e:
 			print(e)
-			return False
+			return n4d.responses.build_failed_call_response(False,str(e))
 			
 		
 	#def set_zc_message
@@ -71,7 +72,7 @@ class ZCenterVariables:
 		if app  in self.internal_variable["messages"]:
 			self.internal_variable["messages"].pop(app)
 	
-		return True
+		return n4d.responses.build_successful_call_response(True)
 		
 	#def remove_zc_message
 	
@@ -97,10 +98,10 @@ class ZCenterVariables:
 							pass
 							
 			ret=ret.rstrip(" ").lstrip(" ")
-			return ret
+			return n4d.responses.build_successful_call_response(ret)
 			
 		except Exception as e:
-			return ""
+			return n4d.responses.build_failed_call_response("")
 			
 	#def get_zc_messages
 	
@@ -110,24 +111,24 @@ class ZCenterVariables:
 	def get_state(self,app,full=False):
 		
 		if full:
-			return self.get_full_info(app)
+			return n4d.responses.build_successful_call_response(self.get_full_info(app))
 			
 		if app in self.variable:
 			if "state" in self.variable[app]:
-				return self.variable[app]["state"]
+				return n4d.responses.build_successful_call_response(self.variable[app]["state"])
 			else:
-				return ZCenterVariables.NOT_CONFIGURED
+				return n4d.responses.build_successful_call_response(ZCenterVariables.NOT_CONFIGURED)
 		else:
-			return ZCenterVariables.NOT_CONFIGURED
+			return n4d.responses.build_successful_call_response(ZCenterVariables.NOT_CONFIGURED)
 			
 	#def get_state
 			
 	def get_full_info(self,app):
 		
 		if app in self.variable:
-			return self.variable[app]
+			return n4d.responses.build_successful_call_response(self.variable[app])
 		else:
-			return {"state":ZCenterVariables.NOT_CONFIGURED,"time":self.get_current_time()}
+			return n4d.responses.build_successful_call_response({"state":ZCenterVariables.NOT_CONFIGURED,"time":self.get_current_time()})
 			
 	#def get_full_info
 	
@@ -142,9 +143,9 @@ class ZCenterVariables:
 			
 			self.core.set_variable("ZEROCENTER",self.variable)
 			
-			return True
+			return n4d.responses.build_successful_call_response(True)
 		except:
-			return False
+			return n4d.responses.build_failed_call_response(False)
 
 	#def set_state
 	
@@ -168,11 +169,11 @@ class ZCenterVariables:
 			self.variable[app]["custom_text"]=text
 			self.core.set_variable("ZEROCENTER",self.variable)
 			
-			return True
+			return n4d.responses.build_successful_call_response(True)
 		
 		except Exception as e:
 			print(e)
-			return False
+			return n4d.responses.build_failed_call_response(False,str(e))
 		
 	#def set_custom_text
 	
@@ -184,10 +185,12 @@ class ZCenterVariables:
 				
 			self.variable[app]["pulsating"]=True
 			self.core.set_variable("ZEROCENTER",self.variable)
+			
+			return n4d.responses.build_successful_call_response(True)
 		
 		except Exception as e:
 			print(e)
-			return False
+			return n4d.responses.build_failed_call_response(False,str(e))
 		
 	#def add_pulsating_color
 	
@@ -199,16 +202,17 @@ class ZCenterVariables:
 				
 			self.variable[app]["pulsating"]=False
 			self.core.set_variable("ZEROCENTER",self.variable)
+			return n4d.responses.build_successful_call_response(True)
 		
 		except Exception as e:
 			print(e)
-			return False
+			return n4d.responses.build_failed_call_response(False,str(e))
 		
 	#def remove_pulsating_color
 	
 	def get_all_states(self):
 		
-		return self.variable
+		return n4d.responses.build_successful_call_response(self.variable)
 		
 	#def get_all_states
 	
