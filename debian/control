@@ -7,7 +7,7 @@ Standards-Version: 4.1.2
 
 Package: zero-center
 Architecture: all
-Depends: ${misc:Depends}, zero-center-common (= ${binary:Version}), n4d(>= 0.105), n4d-lliurex-base, python3, libnotify-bin, python3-cairo, python3-gi-cairo
+Depends: ${misc:Depends}, zero-center-common (= ${binary:Version}), n4d(>= 0.900), python3, libnotify-bin, python3-cairo, python3-gi-cairo
 Description: Lliurex control center
  Lliurex control center is a gtk frontend that enables user 
  to administrate a lliurex based system. 
