@@ -1,9 +1,14 @@
 zero-center (1:2.70) focal; urgency=medium
 
-  * First focal release
-  * ported to n4d >= 0.908
+  * ported to n4d >= 0.900
 
- -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 25 Jan 2021 10:59:32 +0100
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 25 Jan 2021 13:24:52 +0100
+
+zero-center (1:2.64) focal; urgency=medium
+
+  * First focal release
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 25 Jan 2021 10:59:32 +0100
 
 zero-center (1:2.54) bionic; urgency=medium
 
