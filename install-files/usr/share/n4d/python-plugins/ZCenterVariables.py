@@ -1,6 +1,8 @@
 import time
 import copy
 
+import n4d.server.core
+
 class ZCenterVariables:
 	
 	NOT_CONFIGURED=0
@@ -12,33 +14,33 @@ class ZCenterVariables:
 	
 	def __init__(self):
 		
-		pass
+		self.core=n4d.server.core.Core.get_core()
 		
 	#def init
 	
+	def get_variable(self,variable,default_value=None):
+		
+		ret=self.core.get_variable(variable)
+		if ret["status"]==0:
+			return ret["return"]
+		
+		return default_value
+		
+	#def get_variable
+
+	
 	def startup(self,options):
 		
-		self.n4d_vars=objects["VariablesManager"]
 		
-		self.internal_variable=copy.deepcopy(objects["VariablesManager"].get_variable("ZEROCENTERINTERNAL"))
-		self.variable=copy.deepcopy(objects["VariablesManager"].get_variable("ZEROCENTER"))
+		if not self.core.variable_exists("ZEROCENTERINTERNAL"):
+			self.core.set_variable("ZEROCENTERINTERNAL",{},{"info":"Zero-Center internal variable"})
 		
+		if not self.core.variable_exists("ZEROCENTER"):
+			self.core.set_variable("ZEROCENTER",{},{"info":"Zero Center states variable"})
 		
+		self.internal_variable=self.get_variable("ZEROCENTERINTERNAL",{})
+		self.variable=self.get_variable("ZEROCENTER",{})
 		
-		if self.internal_variable==None:
-			try:
-				self.n4d_vars.add_variable("ZEROCENTERINTERNAL",{},"","ZeroCenter internal variable","zero-center")
-				self.internal_variable={}
-			except Exception as e:
-				
-				self.internal_variable=self.n4d_vars.get_variable("ZEROCENTERINTERNAL")
-		
-		if self.variable==None:
-			try:
-				self.n4d_vars.add_variable("ZEROCENTER",{},"","ZeroCenter states variable","zero-center")
-			except:
-				pass
-			self.variable={}
 		
 	#def init
 	
@@ -54,7 +56,7 @@ class ZCenterVariables:
 			self.internal_variable["messages"][app]["message"]["es"]=message_es
 			self.internal_variable["messages"][app]["message"]["qcv"]=message_qcv
 			self.internal_variable["messages"][app]["message"]["ca"]=message_qcv
-			self.n4d_vars.set_variable("ZEROCENTERINTERNAL",copy.deepcopy(self.internal_variable))
+			self.core.set_variable("ZEROCENTERINTERNAL",self.internal_variable)
 			return True
 			
 		except Exception as e:
@@ -138,7 +140,8 @@ class ZCenterVariables:
 			self.variable[app]["state"]=state
 			self.variable[app]["time"]=self.get_current_time()
 			
-			self.n4d_vars.set_variable("ZEROCENTER",copy.deepcopy(self.variable))
+			self.core.set_variable("ZEROCENTER",self.variable)
+			
 			return True
 		except:
 			return False
@@ -163,12 +166,12 @@ class ZCenterVariables:
 			if not app in self.variable:
 				self.variable[app]={}
 			self.variable[app]["custom_text"]=text
-			self.n4d_vars.set_variable("ZEROCENTER",copy.deepcopy(self.variable))
+			self.core.set_variable("ZEROCENTER",self.variable)
 			
 			return True
 		
 		except Exception as e:
-			print e
+			print(e)
 			return False
 		
 	#def set_custom_text
@@ -180,10 +183,10 @@ class ZCenterVariables:
 				self.variable[app]={}
 				
 			self.variable[app]["pulsating"]=True
-			self.n4d_vars.set_variable("ZEROCENTER",copy.deepcopy(self.variable))
+			self.core.set_variable("ZEROCENTER",self.variable)
 		
 		except Exception as e:
-			print e
+			print(e)
 			return False
 		
 	#def add_pulsating_color
@@ -195,10 +198,10 @@ class ZCenterVariables:
 				self.variable[app]={}
 				
 			self.variable[app]["pulsating"]=False
-			self.n4d_vars.set_variable("ZEROCENTER",copy.deepcopy(self.variable))
+			self.core.set_variable("ZEROCENTER",self.variable)
 		
 		except Exception as e:
-			print e
+			print(e)
 			return False
 		
 	#def remove_pulsating_color
