@@ -1,0 +1,92 @@
+{
+    "SETUP": {
+        "type": "python",
+        "path": "ZCenterVariables.py",
+        "class": "ZCenterVariables"
+    },
+    "METHODS": {
+        "get_variable": {
+            "allowed_groups": [
+                "anonymous",
+            ]
+        },
+        "set_zc_message": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "remove_zc_message": {
+            "allowed_groups": [
+                "sudo",
+		"admins"
+            ]
+        },
+        "get_zc_messages": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "get_current_time": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "get_state": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "get_full_info": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "set_custom_state": {
+            "allowed_groups": [
+                "sudo",
+		"admins"
+            ]
+        },
+        "set_configured": {
+            "allowed_groups": [
+                "sudo",
+		"admins"
+            ]
+        },
+        "set_non_configured": {
+            "allowed_groups": [
+                "sudo",
+		"admins"
+            ]
+        },
+        "set_failed": {
+            "allowed_groups": [
+                "sudo",
+		"admins"
+            ]
+        },
+        "set_custom_text": {
+            "allowed_groups": [
+                "sudo",
+		"admins"
+            ]
+        },
+        "add_pulsating_color": {
+            "allowed_groups": [
+                "sudo",
+		"admins"
+            ]
+        },
+        "remove_pulsating_color": {
+            "allowed_groups": [
+                "sudo",
+		"admins"
+            ]
+        },
+        "get_all_states": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        }
+    }
+}
