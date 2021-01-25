@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+f#!/usr/bin/python3
 # -*- coding: utf-8 -*
  
 
@@ -199,12 +199,17 @@ class ZeroCenter:
 		self.scrolling=False
 		
 		try:
-			self.msg_text=self.client.get_zc_messages("","ZCenterVariables",self.lang)
+			#self.msg_text=self.client.get_zc_messages("","ZCenterVariables",self.lang)
+			ret=self.client.get_zc_messages("","ZCenterVariables",self.lang)
+			if ret["status"]==0:
+				self.msg_text=ret["return"]
 			if self.msg_text=="":
-				txt=self.client.lliurex_version("","LliurexVersion")
-				if type(txt)==type([]):
-					self.msg_text=str(txt[1])
-				else:
+				try:
+					txt["return"]=self.client.lliurex_version("","LliurexVersion")
+					if type(txt)==type([]):
+						self.msg_text=str(txt[1])
+				except:
+					print("LliurexVersion failed")
 					f=open("/etc/lsb-release")
 					lines=f.readlines()
 					f.close()
@@ -212,7 +217,14 @@ class ZeroCenter:
 						if "DISTRIB_DESCRIPTION" in line:
 							self.msg_text=line.split("=")[1]
 			#Load slave_blacklist
-			self.blacklist=self.client.get_variable("","VariablesManager","SLAVE_BLACKLIST")
+			try:
+				if self.client.variable_exists("SLAVE_BLACKLIST")["return"]
+					self.blacklist=self.client.get_variable("SLAVE_BLACKLIST")["return"]
+				else:
+					self.blacklist=[]
+			except:
+				print("blacklist failed")
+				self.blacklist=[]
 
 		except:
 			self.msg_text=""
@@ -226,9 +238,9 @@ class ZeroCenter:
 	def get_states(self):
 		
 		try:
-			var=self.client.get_all_states("","ZCenterVariables")
+			var=self.client.get_all_states("","ZCenterVariables")["return"]
 		except:
-			local_path="/var/lib/n4d/variables-dir/ZEROCENTER"
+			local_path="/var/lib/n4d/variables/ZEROCENTER"
 			if os.path.exists(local_path):
 				f=open(local_path)
 				var=json.load(f)["ZEROCENTER"]["value"]
@@ -1284,7 +1296,8 @@ class ZeroCenter:
 	def app_clicked(self,widget,app):
 
 		try:
-			if  self.client.get_variable("","VariablesManager","MASTER_SERVER_IP"):
+			
+			if  self.client.variable_exists("MASTER_SERVER_IP"):
 				if app["ID"] in self.blacklist:
 					result = self.open_dialog("Warning",_("We are in a center model and therefore should install this service on the master \n server to be accessible from any computer in the center, whether to continue \n with the installation on this computer the service is only available on computers \n that are in the internal network of this server."),True)
 					if result == Gtk.ResponseType.CANCEL:
@@ -1455,7 +1468,7 @@ class ZeroCenter:
 	def get_state(self,app):
 
 		try:
-			configured=self.client.get_state("","ZCenterVariables",app["ID"])
+			configured=self.client.get_state("","ZCenterVariables",app["ID"])["return"]
 			return configured
 		except:
 			return 0
