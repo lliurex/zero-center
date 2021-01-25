@@ -26,11 +26,6 @@
                 "anonymous"
             ]
         },
-        "get_current_time": {
-            "allowed_groups": [
-                "anonymous"
-            ]
-        },
         "get_state": {
             "allowed_groups": [
                 "anonymous"
@@ -39,12 +34,6 @@
         "get_full_info": {
             "allowed_groups": [
                 "anonymous"
-            ]
-        },
-        "set_custom_state": {
-            "allowed_groups": [
-                "sudo",
-		"admins"
             ]
         },
         "set_configured": {
