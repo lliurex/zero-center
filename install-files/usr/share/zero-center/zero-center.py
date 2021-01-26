@@ -1,4 +1,4 @@
-f#!/usr/bin/python3
+#!/usr/bin/python3
 # -*- coding: utf-8 -*
  
 
@@ -183,6 +183,7 @@ class AppParser:
 class ZeroCenter:
 	
 	def __init__(self):
+		
 		context=ssl._create_unverified_context()
 		self.client = xmlrpc.client.ServerProxy('https://127.0.0.1:9779',context=context,allow_none=True)
 		self.create_user_env()
@@ -218,7 +219,7 @@ class ZeroCenter:
 							self.msg_text=line.split("=")[1]
 			#Load slave_blacklist
 			try:
-				if self.client.variable_exists("SLAVE_BLACKLIST")["return"]
+				if self.client.variable_exists("SLAVE_BLACKLIST")["return"]:
 					self.blacklist=self.client.get_variable("SLAVE_BLACKLIST")["return"]
 				else:
 					self.blacklist=[]
@@ -238,8 +239,10 @@ class ZeroCenter:
 	def get_states(self):
 		
 		try:
-			var=self.client.get_all_states("","ZCenterVariables")["return"]
-		except:
+			var=self.client.get_all_states("","ZCenterVariables")
+			var=var["return"]
+	
+		except Exception as e:
 			local_path="/var/lib/n4d/variables/ZEROCENTER"
 			if os.path.exists(local_path):
 				f=open(local_path)
@@ -247,7 +250,7 @@ class ZeroCenter:
 				f.close()
 			else:
 				var={}
-				
+			
 		try:
 			for cat in self.app_parser.apps:
 			
