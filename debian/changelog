@@ -1,3 +1,9 @@
+zero-center (1:2.71.2) focal; urgency=medium
+
+  * Fixed postinst to enable the right n4d conf file
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 29 Jan 2021 09:40:10 +0100
+
 zero-center (1:2.71.1) focal; urgency=medium
 
   * dummy upgrade. n4d-vars related
