@@ -1,3 +1,9 @@
+zero-center (1:2.71.3) focal; urgency=medium
+
+  * Fixed variable creation in n4d plugin
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 08 Feb 2021 08:55:58 +0100
+
 zero-center (1:2.71.2) focal; urgency=medium
 
   * Fixed postinst to enable the right n4d conf file
