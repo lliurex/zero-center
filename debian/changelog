@@ -1,3 +1,9 @@
+zero-center (1:2.72) focal; urgency=medium
+
+  * Fixed master server ip check
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 30 Mar 2021 12:48:47 +0200
+
 zero-center (1:2.71.4) focal; urgency=medium
 
   * Fixed variable creation in n4d plugin
