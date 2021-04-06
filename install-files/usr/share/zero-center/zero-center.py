@@ -397,7 +397,6 @@ class ZeroCenter:
 		self.window.set_name("BLACK")
 		self.buttons_vbox=builder.get_object("buttons_vbox")
 		self.content_hbox=builder.get_object("main_box")
-		self.content_hbox.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(0.2,0.2,0.2,1))
 		self.window_box=builder.get_object("window_box")
 		self.viewport=builder.get_object("viewport1")
 		self.viewport.set_name("ORANGE")
@@ -422,7 +421,6 @@ class ZeroCenter:
 		self.window.connect("key-press-event",self.on_key_press_event)
 		
 		self.window.show()
-		GObject.threads_init()
 		Gtk.main()
 		
 	#def start_gui
@@ -1135,8 +1133,8 @@ class ZeroCenter:
 			
 			once=True
 			hbox=Gtk.FlowBox()
-			hbox.set_margin_left(5)
-			hbox.set_margin_right(5)
+			hbox.set_margin_start(5)
+			hbox.set_margin_end(5)
 			hbox.set_homogeneous(True)
 			hbox.set_column_spacing(5)
 			hbox.set_row_spacing(10)
@@ -1225,7 +1223,7 @@ class ZeroCenter:
 					self.add_label(self.get_translation(category),icon,r)
 					once=False
 				
-				hbox.set_margin_left(20)
+				hbox.set_margin_start(20)
 				
 				r.add(hbox)
 				r.set_reveal_child(True)
@@ -1248,12 +1246,13 @@ class ZeroCenter:
 		tmpbox=Gtk.HBox()
 		img=Gtk.Image()
 		img.set_from_icon_name(icon_name,Gtk.IconSize.MENU)
-		label=Gtk.Label(label_name)
+		label=Gtk.Label()
+		label.set_text(label_name)
 		label.set_name("WHITE-15")
 		expander=Gtk.HSeparator()
-		expander.set_margin_right(15)
+		expander.set_margin_end(15)
 		expander.set_valign(Gtk.Align.CENTER)
-		tmpbox.set_margin_left(10)
+		tmpbox.set_margin_start(10)
 		tmpbox.set_margin_top(5)
 		tmpbox.pack_start(img,False,False,0)
 		tmpbox.pack_start(label,False,False,10)
@@ -1268,7 +1267,7 @@ class ZeroCenter:
 		expand_button.set_image(expanded_image)
 		expand_button.show_all()
 		expand_button.connect("clicked",self.category_label_clicked,r)
-		expand_button.set_margin_right(18)
+		expand_button.set_margin_end(18)
 		tmpbox.pack_start(expand_button,False,True,0)
 		tmpbox.show_all()
 		self.content_hbox.pack_start(tmpbox,False,False,5)		
