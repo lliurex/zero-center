@@ -10,6 +10,7 @@ import xmlrpc.client
 import ssl
 import cairo
 import grp
+import pwd
 import sys
 import subprocess
 import json
@@ -206,11 +207,15 @@ class ZeroCenter:
 				self.msg_text=ret["return"]
 			if self.msg_text=="":
 				try:
-					txt["return"]=self.client.lliurex_version("","LliurexVersion")
-					if type(txt)==type([]):
-						self.msg_text=str(txt[1])
-				except:
+					txt=self.client.lliurex_version("","LliurexVersion")
+					#if type(txt)==type([]):
+						#self.msg_text=str(txt[1])
+					if txt["status_code"]==0:
+						#self.msg_text=txt["return"].split(",")[1]
+						self.msg_text=txt["return"]
+				except Exception as e:
 					print("LliurexVersion failed")
+					print(e)
 					f=open("/etc/lsb-release")
 					lines=f.readlines()
 					f.close()
@@ -357,7 +362,9 @@ class ZeroCenter:
 			
 		groups={}
 		
-		for item in grp.getgrall():
+		#Old user/group test
+
+		'''for item in grp.getgrall():
 			if len(item.gr_mem)>0:
 				if item.gr_name not in groups:
 					groups[item.gr_name]=item.gr_mem
@@ -373,7 +380,18 @@ class ZeroCenter:
 					
 			self.user_groups.append("*")
 		except:
-			pass
+			pass'''
+
+		#END Old user/group test
+
+		user=os.environ["USER"]
+		gid = pwd.getpwnam(user).pw_gid
+		groups_gids = os.getgrouplist(user, gid)
+		self.user_groups = [ grp.getgrgid(x).gr_name for x in groups_gids ]
+
+		self.user_groups.append("*")
+		print('User Groups: %s'%self.user_groups)
+
 		
 	#def create_user_area
 
