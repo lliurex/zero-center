@@ -384,7 +384,7 @@ class ZeroCenter:
 
 		#END Old user/group test
 
-		user=os.environ["USER"]
+		user=os.getlogin()
 		gid = pwd.getpwnam(user).pw_gid
 		groups_gids = os.getgrouplist(user, gid)
 		self.user_groups = [ grp.getgrgid(x).gr_name for x in groups_gids ]
