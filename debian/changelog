@@ -1,3 +1,9 @@
+zero-center (1:2.76) focal; urgency=medium
+
+  * Trying to guess if user is root when os.getlogin fails
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 21 Jul 2021 11:29:26 +0200
+
 zero-center (1:2.75) focal; urgency=medium
 
   * using os.getlogin instead of os.environ["USER"]
