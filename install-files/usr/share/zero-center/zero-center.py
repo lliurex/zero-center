@@ -383,8 +383,20 @@ class ZeroCenter:
 			pass'''
 
 		#END Old user/group test
-
-		user=os.getlogin()
+		
+		try:
+			user=os.getlogin()
+			
+		except Exception as e:
+			try:
+				# Likely this is being executed inside n4d, so we might be root
+				f=open("/etc/n4d/key","r")
+				key=f.readline().strip("\n")
+				f.close()
+				user="root"
+			except:
+				raise e
+				
 		gid = pwd.getpwnam(user).pw_gid
 		groups_gids = os.getgrouplist(user, gid)
 		self.user_groups = [ grp.getgrgid(x).gr_name for x in groups_gids ]
