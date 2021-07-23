@@ -1,3 +1,9 @@
+zero-center (1:2.77) focal; urgency=medium
+
+  * Fixed MASTER_SERVER_IP check
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 23 Jul 2021 11:27:06 +0200
+
 zero-center (1:2.76) focal; urgency=medium
 
   * Trying to guess if user is root when os.getlogin fails
