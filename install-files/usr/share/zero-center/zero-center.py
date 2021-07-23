@@ -231,7 +231,7 @@ class ZeroCenter:
 			except:
 				print("blacklist failed")
 				self.blacklist=[]
-
+				
 		except:
 			self.msg_text=""
 		
@@ -1329,7 +1329,7 @@ class ZeroCenter:
 
 		try:
 			
-			if  self.client.variable_exists("MASTER_SERVER_IP")["return"]:
+			if  self.client.variable_exists("MASTER_SERVER_IP")["return"] and self.client.get_variable("MASTER_SERVER_IP")["return"]!=None:
 				if app["ID"] in self.blacklist:
 					result = self.open_dialog("Warning",_("We are in a center model and therefore should install this service on the master \n server to be accessible from any computer in the center, whether to continue \n with the installation on this computer the service is only available on computers \n that are in the internal network of this server."),True)
 					if result == Gtk.ResponseType.CANCEL:
