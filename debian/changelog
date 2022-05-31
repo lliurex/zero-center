@@ -1,3 +1,9 @@
+zero-center (1:2.78) focal-updates; urgency=medium
+
+  * Added new category Multimedia
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 31 May 2022 09:25:29 +0200
+
 zero-center (1:2.77) focal; urgency=medium
 
   * Fixed MASTER_SERVER_IP check
