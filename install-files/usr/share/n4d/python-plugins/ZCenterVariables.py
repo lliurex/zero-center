@@ -1,5 +1,6 @@
 import time
 import copy
+import os
 
 import n4d.server.core
 import n4d.responses
@@ -32,11 +33,10 @@ class ZCenterVariables:
 	
 	def startup(self,options):
 		
-		
-		if not self.core.variable_exists("ZEROCENTERINTERNAL")["return"]:
+		if not os.path.exists("/var/lib/n4d/variables/ZEROCENTERINTERNAL"):
 			self.core.set_variable("ZEROCENTERINTERNAL",{},{"info":"Zero-Center internal variable"})
 		
-		if not self.core.variable_exists("ZEROCENTER")["return"]:
+		if not os.path.exists("/var/lib/n4d/variables/ZEROCENTER"):
 			self.core.set_variable("ZEROCENTER",{},{"info":"Zero Center states variable"})
 		
 		self.internal_variable=self.get_variable("ZEROCENTERINTERNAL",{})
