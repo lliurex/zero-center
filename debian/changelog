@@ -1,3 +1,9 @@
+zero-center (1:2.80) focal; urgency=medium
+
+  * Fix zerocenter variables in client
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Thu, 23 Jun 2022 12:51:06 +0200
+
 zero-center (1:2.79) focal-updates; urgency=medium
 
   * Added new category FP
