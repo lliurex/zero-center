@@ -10,6 +10,7 @@ import xmlrpc.client
 import ssl
 import cairo
 import grp
+import pwd
 import sys
 import subprocess
 import json
@@ -341,7 +342,8 @@ class ZeroCenter:
 			fallback_lang()
 			
 		groups={}
-		
+		#Old user/group test
+		'''
 		for item in grp.getgrall():
 			if len(item.gr_mem)>0:
 				if item.gr_name not in groups:
@@ -359,6 +361,27 @@ class ZeroCenter:
 			self.user_groups.append("*")
 		except:
 			pass
+		'''
+		#END Old user/group test
+
+		try:
+			user=os.getlogin()
+
+		except Exception as e:
+			try:
+				f=open("/etc/n4d/key","r")
+				key=f.readline().split("\n")
+				f.close()
+				user="root"
+			except:
+				raise e
+
+		gid=pwd.getpwnam(user).pw_gid
+		groups_gids=os.getgrouplist(user,gid)
+		self.user_groups=[grp.getgrgid(x).gr_name for x in groups_gids]
+
+		self.user_groups.append("*")
+
 		
 	#def create_user_area
 
