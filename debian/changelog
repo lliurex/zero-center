@@ -1,3 +1,10 @@
+zero-center (1:2.57) bionic; urgency=medium
+
+  * Added new categories: FP and Multimedia
+  * Added tool to generte report about zero-center apps
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 15 Nov 2022 08:48:16 +0100
+
 zero-center (1:2.56) bionic; urgency=medium
 
   * Changed user/group test to use CDC
