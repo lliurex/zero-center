@@ -1,0 +1,177 @@
+#! /usr/bin/python3
+import sys
+import os
+import subprocess
+import csv
+from os import listdir
+from os.path import isfile, isfile,isdir,join
+from clint import arguments
+from clint.textui import puts, indent
+
+
+class ZeroReport(object):
+
+	def __init__(self):
+
+		self.sourceFolder="/usr/share/zero-center/applications"
+		user=os.environ["USER"]
+		self.outputFolder="/home/%s"%user
+		self.outputFile="zerocenter-report"
+
+	#def __init__
+
+	def main(self,groupsToReport):
+
+		print('   [Zero-Report]: Generating report. Wait a moment...')
+		self.groupsToReport=groupsToReport
+		self.flavour=self.getFlavour()
+		self.fieldsNames=self.generateFieldsNames()
+		self.generateReport()
+
+	#def main
+
+	def getFlavour(self):
+
+		flavours=""
+		cmd='lliurex-version -v'
+		p=subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
+		result=p.communicate()[0]
+
+		if type(result) is bytes:
+			result=result.decode()
+
+		tmpFlavours = [ x.strip() for x in result.split(',') ]
+		for item in tmpFlavours:
+			flavours="%s_%s"%(flavours,item)
+
+		return flavours[1:]
+
+	#def getFlavour
+
+	def generateFieldsNames(self):
+
+		fieldsNames=['Categoria','Zomando']
+
+		if self.groupsToReport[2]:
+			fieldsNames.append('Admins')
+			fieldsNames.append('Teachers')
+			fieldsNames.append('All')
+			return fieldsNames
+		else:
+			if self.groupsToReport[0]:
+				fieldsNames.append('Admins')
+			if self.groupsToReport[1]:
+				fieldsNames.append('Teachers')
+
+		return fieldsNames
+
+	#def generateFieldsNames
+
+	def generateReport(self):
+
+		ouputFileName="%s_%s.csv"%(self.outputFile,self.flavour)
+		outputFilePath=os.path.join(self.outputFolder,ouputFileName)
+
+		with open(outputFilePath,'w',newline='') as csvFile:
+			writer=csv.DictWriter(csvFile,fieldnames=self.fieldsNames)
+			writer.writeheader()		
+			
+			for item in listdir(self.sourceFolder):
+				t=join(self.sourceFolder,item)
+				if isfile(t):
+					zomando=item.split(".app")[0]
+					adminMatch=""
+					teacherMatch=""
+					allMatch=""
+					try:
+						with open(t,'r',encoding='utf-8') as fd:
+							content=fd.readlines()
+							fd.close()
+						for line in content:
+							try:
+								key,value=line.split("=")
+								if key=="Category":
+									tmpCateg=value.strip("\n")
+								if key=="Groups":
+									tmpGroups=value.strip("\n").split(";")
+									if 'sudo' in tmpGroups or 'admins' in tmpGroups:
+										adminMatch='X'
+									if 'teachers' in tmpGroups:
+										teacherMatch='X'
+									if '*' in tmpGroups:
+										adminMatch='X'
+										teacherMatch='X'
+										allMatch='X'
+							except:
+								pass
+							
+						if self.groupsToReport[2]:
+							writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:teacherMatch,self.fieldsNames[4]:allMatch})
+						else:
+							if self.groupsToReport[0]:
+								if not self.groupsToReport[1]:
+									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch})
+								else:
+									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:teacherMatch})
+							else:
+								writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:teacherMatch})
+									
+					except Exception as e:
+						print("Error processing %s:%s"%(zomando,str(e)))
+						pass
+		
+		print('   [Zero-Report]: Report generated. You can find it in: %s'%outputFilePath)
+		sys.exit(0)
+
+	#def generateReport
+
+#class ZeroReport
+
+def	usage():
+	puts("Usage")
+	with indent(4):
+		puts("zero-report ACTION")
+		puts("Actions")
+		with indent(4):
+			puts("-h --help: Show help")
+			puts("-g --generate [admins|teachers|all]: Generate report for indicated groups (separeted by space)")	
+
+	sys.exit(1)		
+
+#def usage
+
+if __name__ == '__main__':
+
+	groupsToReport=[]
+	reportAdmin=False
+	reportTeacher=False
+	reportAll=False
+	groupsRef=['admins','teachers','all']
+
+	args = arguments.Args().copy
+	if args.contains(["-h","--help"]) or len(args.all) == 0 :
+		usage()
+	if args.contains(["-g","--generate"]):
+		index = args.first(["-g","--generate"])
+		args.pop(index)
+		if len(args)>0:
+			for item in args.all:
+				if item in groupsRef:
+					if item==groupsRef[2]:
+						reportAll=True
+						break
+					elif item==groupsRef[0]:
+						reportAdmin=True
+					elif item==groupsRef[1]:
+						reportTeacher=True
+		else:
+			reportAll=True
+		
+		if reportAll or reportAdmin or reportTeacher:
+			groupsToReport=[reportAdmin,reportTeacher,reportAll]
+			zeroReport = ZeroReport()	
+			sys.exit(zeroReport.main(groupsToReport))
+		else:
+			usage()
+	else:
+		usage()
