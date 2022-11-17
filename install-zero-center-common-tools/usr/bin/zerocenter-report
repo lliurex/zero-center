@@ -33,6 +33,7 @@ class ZeroReport(object):
 	def getFlavour(self):
 
 		flavours=""
+		version=""
 		cmd='lliurex-version -v'
 		p=subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
 		result=p.communicate()[0]
@@ -44,6 +45,16 @@ class ZeroReport(object):
 		for item in tmpFlavours:
 			flavours="%s_%s"%(flavours,item)
 
+		cmd='lliurex-version -n'
+		p=subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
+		result=p.communicate()[0]
+
+		if type(result) is bytes:
+			result=result.decode()
+
+		version=result.strip()
+		flavours="%s_%s"%(flavours,version)
+
 		return flavours[1:]
 
 	#def getFlavour
@@ -52,9 +63,10 @@ class ZeroReport(object):
 
 		fieldsNames=['Categoria','Zomando']
 
-		if self.groupsToReport[2]:
+		if self.groupsToReport[3]:
 			fieldsNames.append('Admins')
 			fieldsNames.append('Teachers')
+			fieldsNames.append('Students')
 			fieldsNames.append('All')
 			return fieldsNames
 		else:
@@ -62,6 +74,8 @@ class ZeroReport(object):
 				fieldsNames.append('Admins')
 			if self.groupsToReport[1]:
 				fieldsNames.append('Teachers')
+			if self.groupsToReport[2]:
+				fieldsNames.append('Students')
 
 		return fieldsNames
 
@@ -82,6 +96,7 @@ class ZeroReport(object):
 					zomando=item.split(".app")[0]
 					adminMatch=""
 					teacherMatch=""
+					studentMatch=""
 					allMatch=""
 					try:
 						with open(t,'r',encoding='utf-8') as fd:
@@ -98,23 +113,37 @@ class ZeroReport(object):
 										adminMatch='X'
 									if 'teachers' in tmpGroups:
 										teacherMatch='X'
+									if 'students' in tmpGroups:
+										studentMatch='X'
 									if '*' in tmpGroups:
 										adminMatch='X'
 										teacherMatch='X'
+										studentMatch='X'
 										allMatch='X'
 							except:
 								pass
 							
-						if self.groupsToReport[2]:
-							writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:teacherMatch,self.fieldsNames[4]:allMatch})
+						if self.groupsToReport[3]:
+							writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:teacherMatch,self.fieldsNames[4]:studentMatch,self.fieldsNames[5]:allMatch})
 						else:
 							if self.groupsToReport[0]:
-								if not self.groupsToReport[1]:
+								if not self.groupsToReport[1] and not self.groupsToReport[2]:
 									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch})
-								else:
+								elif self.groupsToReport[1] and not self.groupsToReport[2]:
 									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:teacherMatch})
+								elif self.groupsToReport[1] and self.groupsToReport[2]:
+									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:teacherMatch,self.fieldsNames[4]:studentMatch})
+								elif not self.groupsToReport[1] and self.groupsToReport[2]:
+									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:studentMatch})
+
 							else:
-								writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:teacherMatch})
+								if self.groupsToReport[1]:
+									if not self.groupsToReport[2]:
+										writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:teacherMatch})
+									else:
+										writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:teacherMatch,self.fieldsNames[3]:studentMatch})
+								else:
+									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:studentMatch})
 									
 					except Exception as e:
 						print("Error processing %s:%s"%(zomando,str(e)))
@@ -134,7 +163,7 @@ def	usage():
 		puts("Actions")
 		with indent(4):
 			puts("-h --help: Show help")
-			puts("-g --generate [admins|teachers|all]: Generate report for indicated groups (separeted by space)")	
+			puts("-g --generate [admins|teachers|students|all]: Generate report for indicated groups (separeted by space)")	
 
 	sys.exit(1)		
 
@@ -145,8 +174,9 @@ if __name__ == '__main__':
 	groupsToReport=[]
 	reportAdmin=False
 	reportTeacher=False
+	reportStudent=False
 	reportAll=False
-	groupsRef=['admins','teachers','all']
+	groupsRef=['admins','teachers','students','all']
 
 	args = arguments.Args().copy
 	if args.contains(["-h","--help"]) or len(args.all) == 0 :
@@ -157,18 +187,20 @@ if __name__ == '__main__':
 		if len(args)>0:
 			for item in args.all:
 				if item in groupsRef:
-					if item==groupsRef[2]:
+					if item==groupsRef[3]:
 						reportAll=True
 						break
 					elif item==groupsRef[0]:
 						reportAdmin=True
 					elif item==groupsRef[1]:
 						reportTeacher=True
+					elif item==groupsRef[2]:
+						reportStudent=True
 		else:
 			reportAll=True
 		
-		if reportAll or reportAdmin or reportTeacher:
-			groupsToReport=[reportAdmin,reportTeacher,reportAll]
+		if reportAll or reportAdmin or reportTeacher or reportStudent:
+			groupsToReport=[reportAdmin,reportTeacher,reportStudent,reportAll]
 			zeroReport = ZeroReport()	
 			sys.exit(zeroReport.main(groupsToReport))
 		else:
