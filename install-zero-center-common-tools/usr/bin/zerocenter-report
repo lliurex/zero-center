@@ -61,7 +61,7 @@ class ZeroReport(object):
 
 	def generateFieldsNames(self):
 
-		fieldsNames=['Categoria','Zomando']
+		fieldsNames=['Categoria','Zomando','Descripción']
 
 		if self.groupsToReport[3]:
 			fieldsNames.append('Admins')
@@ -107,6 +107,8 @@ class ZeroReport(object):
 								key,value=line.split("=")
 								if key=="Category":
 									tmpCateg=value.strip("\n")
+								if key=="Comment[es]":
+									tmpDescription=value
 								if key=="Groups":
 									tmpGroups=value.strip("\n").split(";")
 									if 'sudo' in tmpGroups or 'admins' in tmpGroups:
@@ -124,26 +126,26 @@ class ZeroReport(object):
 								pass
 							
 						if self.groupsToReport[3]:
-							writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:teacherMatch,self.fieldsNames[4]:studentMatch,self.fieldsNames[5]:allMatch})
+							writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:adminMatch,self.fieldsNames[4]:teacherMatch,self.fieldsNames[5]:studentMatch,self.fieldsNames[6]:allMatch})
 						else:
 							if self.groupsToReport[0]:
 								if not self.groupsToReport[1] and not self.groupsToReport[2]:
-									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch})
+									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:adminMatch})
 								elif self.groupsToReport[1] and not self.groupsToReport[2]:
-									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:teacherMatch})
+									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:adminMatch,self.fieldsNames[4]:teacherMatch})
 								elif self.groupsToReport[1] and self.groupsToReport[2]:
-									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:teacherMatch,self.fieldsNames[4]:studentMatch})
+									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:adminMatch,self.fieldsNames[4]:teacherMatch,self.fieldsNames[5]:studentMatch})
 								elif not self.groupsToReport[1] and self.groupsToReport[2]:
-									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:adminMatch,self.fieldsNames[3]:studentMatch})
+									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:adminMatch,self.fieldsNames[4]:studentMatch})
 
 							else:
 								if self.groupsToReport[1]:
 									if not self.groupsToReport[2]:
-										writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:teacherMatch})
+										writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:teacherMatch})
 									else:
-										writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:teacherMatch,self.fieldsNames[3]:studentMatch})
+										writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:teacherMatch,self.fieldsNames[4]:studentMatch})
 								else:
-									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:studentMatch})
+									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:studentMatch})
 									
 					except Exception as e:
 						print("Error processing %s:%s"%(zomando,str(e)))
