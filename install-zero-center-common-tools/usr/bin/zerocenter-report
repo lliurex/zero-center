@@ -3,6 +3,10 @@ import sys
 import os
 import subprocess
 import csv
+import json
+import shutil
+import dbus
+import html2text
 from os import listdir
 from os.path import isfile, isfile,isdir,join
 from clint import arguments
@@ -14,22 +18,38 @@ class ZeroReport(object):
 	def __init__(self):
 
 		self.sourceFolder="/usr/share/zero-center/applications"
+		self.zmdFolder="/usr/share/zero-center/zmds"
 		user=os.environ["USER"]
 		self.outputFolder="/home/%s"%user
 		self.outputFile="zerocenter-report"
+		self.zmdInfoFolder=os.path.join(self.outputFolder,"Fichas_Zomandos")
+		self.verbose=False
+		self.flavour=self.getFlavour()
 
 	#def __init__
 
-	def main(self,groupsToReport):
+	def getList(self,groupsToReport,verbose):
 
 		print('   [Zero-Report]: Generating report. Wait a moment...')
 		self.groupsToReport=groupsToReport
-		self.flavour=self.getFlavour()
+		self.verbose=verbose
+		if self.verbose:
+			self.initDbus()
 		self.fieldsNames=self.generateFieldsNames()
 		self.generateReport()
+		sys.exit(0)
 
-	#def main
+	#def getList
 
+	def getZmdInfo(self,zmd):
+
+		print('   [Zero-Report]: Generating zomando info. Wait a moment...')
+		self.initDbus()
+		self.generateZmdReport(zmd)
+		sys.exit(0)
+		
+	#def getZmdInfo
+	
 	def getFlavour(self):
 
 		flavours=""
@@ -59,16 +79,30 @@ class ZeroReport(object):
 
 	#def getFlavour
 
+	def initDbus(self):
+
+		try:
+			storeBus=dbus.SystemBus()
+			storeProxy=storeBus.get_object('net.lliurex.rebost','/net/lliurex/rebost')
+			self.dbusStore=dbus.Interface(storeProxy,dbus_interface='net.lliurex.rebost')
+			if self.dbusStore:
+				self.showMethod=self.dbusStore.get_dbus_method('show')                            
+		except Exception as e:
+			self.dbusStore=None
+			self._show_debug("storeProxy",str(e))
+
+	#def initDbus
+
 	def generateFieldsNames(self):
 
-		fieldsNames=['Categoria','Zomando','Descripción']
+		fieldsNames=['Categoria','Zomando']
 
 		if self.groupsToReport[3]:
 			fieldsNames.append('Admins')
 			fieldsNames.append('Teachers')
 			fieldsNames.append('Students')
 			fieldsNames.append('All')
-			return fieldsNames
+
 		else:
 			if self.groupsToReport[0]:
 				fieldsNames.append('Admins')
@@ -76,6 +110,8 @@ class ZeroReport(object):
 				fieldsNames.append('Teachers')
 			if self.groupsToReport[2]:
 				fieldsNames.append('Students')
+
+		fieldsNames.append('Descripcion')
 
 		return fieldsNames
 
@@ -86,87 +122,226 @@ class ZeroReport(object):
 		ouputFileName="%s_%s.csv"%(self.outputFile,self.flavour)
 		outputFilePath=os.path.join(self.outputFolder,ouputFileName)
 
-		with open(outputFilePath,'w',newline='') as csvFile:
-			writer=csv.DictWriter(csvFile,fieldnames=self.fieldsNames)
-			writer.writeheader()		
-			
-			for item in listdir(self.sourceFolder):
-				t=join(self.sourceFolder,item)
-				if isfile(t):
-					zomando=item.split(".app")[0]
-					adminMatch=""
-					teacherMatch=""
-					studentMatch=""
-					allMatch=""
-					try:
-						with open(t,'r',encoding='utf-8') as fd:
-							content=fd.readlines()
-							fd.close()
-						for line in content:
-							try:
-								key,value=line.split("=")
-								if key=="Category":
-									tmpCateg=value.strip("\n")
-								if key=="Comment[es]":
-									tmpDescription=value
-								if key=="Groups":
-									tmpGroups=value.strip("\n").split(";")
-									if 'sudo' in tmpGroups or 'admins' in tmpGroups:
-										adminMatch='X'
-									if 'teachers' in tmpGroups:
-										teacherMatch='X'
-									if 'students' in tmpGroups:
-										studentMatch='X'
-									if '*' in tmpGroups:
-										adminMatch='X'
-										teacherMatch='X'
-										studentMatch='X'
-										allMatch='X'
-							except:
-								pass
-							
-						if self.groupsToReport[3]:
-							writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:adminMatch,self.fieldsNames[4]:teacherMatch,self.fieldsNames[5]:studentMatch,self.fieldsNames[6]:allMatch})
-						else:
-							if self.groupsToReport[0]:
-								if not self.groupsToReport[1] and not self.groupsToReport[2]:
-									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:adminMatch})
-								elif self.groupsToReport[1] and not self.groupsToReport[2]:
-									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:adminMatch,self.fieldsNames[4]:teacherMatch})
-								elif self.groupsToReport[1] and self.groupsToReport[2]:
-									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:adminMatch,self.fieldsNames[4]:teacherMatch,self.fieldsNames[5]:studentMatch})
-								elif not self.groupsToReport[1] and self.groupsToReport[2]:
-									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:adminMatch,self.fieldsNames[4]:studentMatch})
+		if self.verbose:
+			self.zmdInfoFolder="%s_%s"%(self.zmdInfoFolder,self.flavour)
+			if os.path.exists(self.zmdInfoFolder):
+				shutil.rmtree(self.zmdInfoFolder)
+			os.mkdir(self.zmdInfoFolder)
 
-							else:
-								if self.groupsToReport[1]:
-									if not self.groupsToReport[2]:
-										writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:teacherMatch})
-									else:
-										writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:teacherMatch,self.fieldsNames[4]:studentMatch})
-								else:
-									writer.writerow({self.fieldsNames[0]:tmpCateg,self.fieldsNames[1]:zomando,self.fieldsNames[2]:tmpDescription,self.fieldsNames[3]:studentMatch})
-									
-					except Exception as e:
-						print("Error processing %s:%s"%(zomando,str(e)))
-						pass
 		
-		print('   [Zero-Report]: Report generated. You can find it in: %s'%outputFilePath)
-		sys.exit(0)
+		tmpContent=[]
+		for item in listdir(self.sourceFolder):
+			t=join(self.sourceFolder,item)
+			if isfile(t):
+				tmpZmd={}
+				zomando=item.split(".app")[0]
+				adminMatch=""
+				teacherMatch=""
+				studentMatch=""
+				allMatch=""
+				try:
+					with open(t,'r',encoding='utf-8') as fd:
+						content=fd.readlines()
+						fd.close()
+					for line in content:
+						try:
+							key,value=line.split("=")
+							if key=="Category":
+								tmpCateg=value.strip("\n")
+							if key=="Comment[es]":
+								tmpDescription=value
+							if key=="Groups":
+								tmpGroups=value.strip("\n").split(";")
+								if 'sudo' in tmpGroups or 'admins' in tmpGroups:
+									adminMatch='X'
+								if 'teachers' in tmpGroups:
+									teacherMatch='X'
+								if 'students' in tmpGroups:
+									studentMatch='X'
+								if '*' in tmpGroups:
+									adminMatch='X'
+									teacherMatch='X'
+									studentMatch='X'
+									allMatch='X'
+						except:
+							pass
+				
+					if tmpCateg!="":
+						tmpZmd['category']=tmpCateg.capitalize()
+						tmpZmd['zomando']=zomando
+						tmpZmd['adminMatch']=adminMatch
+						tmpZmd['teacherMatch']=teacherMatch
+						tmpZmd['studentMatch']=studentMatch
+						tmpZmd['allMatch']=allMatch
+						tmpZmd['description']=tmpDescription
+						tmpContent.append(tmpZmd)
+	
+				except Exception as e:
+					print("Error processing %s:%s"%(zomando,str(e)))
+					pass
+		
+		if len(tmpContent)>0:
+			tmpContent=sorted(tmpContent,key=lambda d:(d["category"],d["zomando"]))	
+
+			with open(outputFilePath,'w',newline='') as csvFile:
+				writer=csv.DictWriter(csvFile,fieldnames=self.fieldsNames)
+				writer.writeheader()		
+
+				for item in tmpContent:
+
+					if self.groupsToReport[3]:
+						writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["adminMatch"],self.fieldsNames[3]:item["teacherMatch"],self.fieldsNames[4]:item["studentMatch"],self.fieldsNames[5]:item["allMatch"],self.fieldsNames[6]:item["description"]})
+					else:
+						if self.groupsToReport[0]:
+							if not self.groupsToReport[1] and not self.groupsToReport[2]:
+								writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["adminMatch"],self.fieldsNames[3]:item["description"]})
+							elif self.groupsToReport[1] and not self.groupsToReport[2]:
+								writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["adminMatch"],self.fieldsNames[3]:item["teacherMatch"],self.fieldsNames[4]:item["description"]})
+							elif self.groupsToReport[1] and self.groupsToReport[2]:
+								writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["adminMatch"],self.fieldsNames[3]:item["teacherMatch"],self.fieldsNames[4]:item["studentMatch"],self.fieldsNames[5]:item["description"]})
+							elif not self.groupsToReport[1] and self.groupsToReport[2]:
+								writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["adminMatch"],self.fieldsNames[3]:item["studentMatch"],self.fieldsNames[4]:item["description"]})
+
+						else:
+							if self.groupsToReport[1]:
+								if not self.groupsToReport[2]:
+									writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["teacherMatch"],self.fieldsNames[3]:item["description"]})
+								else:
+									writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["teacherMatch"],self.fieldsNames[3]:item["studentMatch"],self.fieldsNames[4]:item["description"]})
+							else:
+								writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["studentMatch"],self.fieldsNames[3]:item["description"]})
+											
+					if self.verbose:
+						self.generateZmdReport(item["zomando"])
+
+			
+			print('   [Zero-Report]: Report generated. You can find it in: %s'%outputFilePath)
+			if self.verbose:
+				print('   [Zero-Report]: Aditional information about zomandos generated. You can find it in: %s'%self.zmdInfoFolder)
+		else:
+			print('   [Zero-Report]: Not found information to generate report')
+		
 
 	#def generateReport
+
+	def generateZmdReport(self,zmd):
+
+		zmdFileName="%s.zmd"%zmd
+		zmdFile=os.path.join(self.zmdFolder,zmdFileName)
+
+		fieldsNames=['Aplication',"Descripcion"]
+		if self.verbose:
+			ouputFileName="%s_.csv"%(zmd)
+			outputFilePath=os.path.join(self.zmdInfoFolder,ouputFileName)
+		else:
+			outputFileName="%s_%s.csv"%(zmd,self.flavour)
+			outputFilePath=os.path.join(self.outputFolder,outputFileName)
+
+		if os.path.exists(zmdFile):
+			with open(zmdFile,'r') as fd:
+				content=fd.readlines()
+
+			for line in content:
+				if '.epi' in line:
+					line=line.split('epi-gtk')
+					try:
+						epiFile=line[1].strip("\n").strip(" ")
+						pkgList=sorted(self.readEpiFile(epiFile))
+
+						if len(pkgList)>1:
+							with open(outputFilePath,'w',newline='') as csvFile:
+								writer=csv.DictWriter(csvFile,fieldnames=fieldsNames)
+								writer.writeheader()
+								for pkg in pkgList:
+									description=self.getPkgInfo(pkg)
+									writer.writerow({fieldsNames[0]:pkg,fieldsNames[1]:description})
+					
+							if not self.verbose:
+								print('   [Zero-Report]: Zomando information generated. You can find it in: %s'%outputFilePath)
+						else:
+							if not self.verbose:
+								print('   [Zero-Report]: The indicated zomando contains only one application')
+					except Exception as e:
+						if not self.verbose:
+							print("Error processing %s:%s"%(epiFile,str(e)))
+						pass	
+		else:
+			if not self.verbose:
+				print('   [Zero-Report]: The indicated zomando is not valid')
+
+	#def generateZmdReport
+
+
+	def readEpiFile(self,epiFile):
+
+		pkgList=[]
+		if os.path.exists(epiFile) and os.path.isfile(epiFile):
+			f=open(epiFile)
+			try:
+				epiLoad=json.load(f)
+				try:
+					if epiLoad["selection_enabled"]["active"]:
+						for item in epiLoad["pkg_list"]:
+							pkgList.append(item["name"])
+				except Exception as e:
+					if not self.verbose:
+						print("Error processing %s:%s"%(epiFile,str(e)))
+						sys.exit(1)
+					else:
+						pass
+			except Exception as e:
+				if not self.verbose:
+					print("Error processing %s:%s"%(epiFile,str(e)))
+					sys.exit(1)
+				else:
+					pass
+
+		return pkgList
+
+	#def readEpiFile
+
+	def getPkgInfo(self,pkg):
+
+		description="No_disponible"
+		if self.dbusStore:
+			try:
+				if '-appimage' in pkg:
+					pkg=pkg.split("-appimage")[0]
+				
+				pkginfo=self.showMethod(pkg,"")
+				info=json.loads(pkginfo)[0]
+
+				if info:
+					data=json.loads(info)
+					info=data.get("description","")
+					h=html2text.HTML2Text()
+					h.body_width=400
+					description=h.handle(info)
+					description=description.replace("&lt;", "<")
+					description=description.replace("&gt;", ">")
+					description=description.replace("&amp;", "&")
+			except:
+				pass
+
+		return description
+
+	#def getPkgInfo
 
 #class ZeroReport
 
 def	usage():
 	puts("Usage")
 	with indent(4):
-		puts("zero-report ACTION")
+		puts("zero-report ACTION [FLAGS...]")
 		puts("Actions")
 		with indent(4):
+			puts("getlist [admins|teachers|students|all]: Generate report about zero-center content for indicated groups (separeted by space)")	
+			puts("getzmdinfo [zomando]: Generate report about the packages offered by the indicated zomando")
+		puts("Flags")
+		with indent(4):
 			puts("-h --help: Show help")
-			puts("-g --generate [admins|teachers|students|all]: Generate report for indicated groups (separeted by space)")	
-
+			puts("-v --verbose: Generate additional information about the packages offered by the zomando. Valid only for getlist action")
+			
 	sys.exit(1)		
 
 #def usage
@@ -178,14 +353,19 @@ if __name__ == '__main__':
 	reportTeacher=False
 	reportStudent=False
 	reportAll=False
+	verbose=False
 	groupsRef=['admins','teachers','students','all']
 
 	args = arguments.Args().copy
 	if args.contains(["-h","--help"]) or len(args.all) == 0 :
 		usage()
-	if args.contains(["-g","--generate"]):
-		index = args.first(["-g","--generate"])
+	if args.contains(["-v","--verbose"]):
+		index= args.first(["-v","--verbose"])
 		args.pop(index)
+		verbose=True
+
+	action=args.pop(0)	
+	if action=="getlist":
 		if len(args)>0:
 			for item in args.all:
 				if item in groupsRef:
@@ -204,7 +384,14 @@ if __name__ == '__main__':
 		if reportAll or reportAdmin or reportTeacher or reportStudent:
 			groupsToReport=[reportAdmin,reportTeacher,reportStudent,reportAll]
 			zeroReport = ZeroReport()	
-			sys.exit(zeroReport.main(groupsToReport))
+			sys.exit(zeroReport.getList(groupsToReport,verbose))
+		else:
+			usage()
+	elif action=="getzmdinfo":
+		if len(args)>0:
+			zmd=args.get(0)
+			zeroReport=ZeroReport()
+			sys.exit(zeroReport.getZmdInfo(zmd))
 		else:
 			usage()
 	else:
