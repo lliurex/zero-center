@@ -89,8 +89,7 @@ class ZeroReport(object):
 				self.showMethod=self.dbusStore.get_dbus_method('show')                            
 		except Exception as e:
 			self.dbusStore=None
-			self._show_debug("storeProxy",str(e))
-
+			
 	#def initDbus
 
 	def generateFieldsNames(self):
