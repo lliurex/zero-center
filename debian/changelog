@@ -1,3 +1,9 @@
+zero-center (1:2.60) bionic; urgency=medium
+
+  * Improved tool to generate report about zero-center apps
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 29 Nov 2022 16:45:40 +0100
+
 zero-center (1:2.58) bionic; urgency=medium
 
   * Improved tool to generate report about zero-center apps
