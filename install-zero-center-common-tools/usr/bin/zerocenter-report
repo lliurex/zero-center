@@ -331,7 +331,7 @@ class ZeroReport(object):
 def	usage():
 	puts("Usage")
 	with indent(4):
-		puts("zero-report ACTION [FLAGS...]")
+		puts("zerocenter-report ACTION [FLAGS...]")
 		puts("Actions")
 		with indent(4):
 			puts("getlist [admins|teachers|students|all]: Generate report about zero-center content for indicated groups (separeted by space)")	
