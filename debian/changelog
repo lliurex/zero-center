@@ -1,3 +1,9 @@
+zero-center (1:2.88) focal; urgency=medium
+
+  * Fixed zerocenter-report help
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Wed, 14 Dec 2022 16:42:20 +0100
+
 zero-center (1:2.86) focal; urgency=medium
 
   * Fixed report
