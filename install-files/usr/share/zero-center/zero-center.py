@@ -218,8 +218,9 @@ class ZeroCenter:
 		except:
 			self.msg_text=""
 		
-		#self.msg_text="hi, i'm a long enough text so that it won't show in just one line. I wonder how many lines I can get inside the box. In my restless dreams I see that town, Silent Hill. I don't know what to type, but I have to keep typing"
-		#57
+		if os.getuid()==59999:
+			self.msg_text="Guest user is not allowed to use zero-center"
+		
 		
 	#def init
 
@@ -358,7 +359,10 @@ class ZeroCenter:
 				if os.environ["USER"] in groups[item]:
 					self.user_groups.append(item)
 					
-			self.user_groups.append("*")
+			# GUEST USER
+			if os.getuid()!=59999:
+				self.user_groups.append("*")		
+				
 		except:
 			pass
 		'''
