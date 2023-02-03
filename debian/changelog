@@ -1,3 +1,9 @@
+zero-center (1:2.89) focal; urgency=medium
+
+  * Removing Guest user from * 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 03 Feb 2023 09:55:40 +0100
+
 zero-center (1:2.88) focal; urgency=medium
 
   * Fixed zerocenter-report help
