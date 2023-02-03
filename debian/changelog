@@ -1,3 +1,9 @@
+zero-center (1:2.62) bionic; urgency=medium
+
+  * Removed guest from *
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 03 Feb 2023 10:00:22 +0100
+
 zero-center (1:2.61) bionic; urgency=medium
 
   * Fixed zerocenter-report help
