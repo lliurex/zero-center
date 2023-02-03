@@ -1,3 +1,9 @@
+zero-center (1:2.89.1) focal; urgency=medium
+
+  * new translations
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 03 Feb 2023 13:55:42 +0100
+
 zero-center (1:2.89) focal; urgency=medium
 
   * Removing Guest user from * 
