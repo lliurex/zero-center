@@ -84,6 +84,8 @@ msgstr "Ocultar"
 msgid "Show"
 msgstr "Mostrar"
 
+msgid "'guest-user' user is not allowed to use zero-center"
+msgstr "El usuario 'guest-user' no tiene permitido usar zero-center"
 
 #: ../install-files/usr/bin/zero-installer:5
 #: ../install-files/usr/bin/zero-reinstall:4

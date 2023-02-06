@@ -75,6 +75,9 @@ msgstr "<b>%s</b> s'està executant. Espereu fins que finalitze."
 msgid "<b>%s</b> is being executed. Are you sure you want to exit?"
 msgstr "<b>%s</b> s'està executant. Esteu segur que voleu eixir?"
 
+msgid "'guest-user' user is not allowed to use zero-center"
+msgstr "L'usuari 'guest-user' no té permés usar zero-center"
+
 #: ../install-files/usr/bin/zero-installer:5
 #: ../install-files/usr/bin/zero-reinstall:4
 msgid "Installing"
