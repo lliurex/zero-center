@@ -218,7 +218,7 @@ class ZeroCenter:
 			self.msg_text=""
 		
 		if os.getuid()==59999:
-			self.msg_text="Guest user is not allowed to use zero-center"
+			self.msg_text=_("Guest user is not allowed to use zero-center")
 		
 		
 	#def init

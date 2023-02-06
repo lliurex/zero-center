@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-06-30 13:33+0200\n"
-"PO-Revision-Date: 2018-07-23 11:48+0200\n"
+"PO-Revision-Date: 2018-07-23 11:47+0200\n"
 "Last-Translator: lliurex <liurex@gva.es>\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES@valencia\n"
@@ -74,6 +74,9 @@ msgstr "<b>%s</b> s'està executant. Espereu fins que finalitze."
 #, python-format
 msgid "<b>%s</b> is being executed. Are you sure you want to exit?"
 msgstr "<b>%s</b> s'està executant. Esteu segur que voleu eixir?"
+
+msgid "'guest-user' user is not allowed to use zero-center"
+msgstr "L'usuari 'guest-user' no té permés usar zero-center"
 
 #: ../install-files/usr/bin/zero-installer:5
 #: ../install-files/usr/bin/zero-reinstall:4
