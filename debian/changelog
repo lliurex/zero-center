@@ -1,3 +1,9 @@
+zero-center (1:2.62.1) bionic; urgency=medium
+
+  * Added translations
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 06 Feb 2023 09:33:03 +0100
+
 zero-center (1:2.62) bionic; urgency=medium
 
   * Removed guest from *
