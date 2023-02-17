@@ -185,6 +185,9 @@ class ZeroCenter:
 	
 	def __init__(self):
 		
+		self.banned_uids=[59999,69999]
+		self.user_uid=os.getuid()
+		
 		context=ssl._create_unverified_context()
 		self.client = xmlrpc.client.ServerProxy('https://127.0.0.1:9779',context=context,allow_none=True)
 		self.create_user_env()
@@ -200,8 +203,7 @@ class ZeroCenter:
 		self.msg_x=0
 		self.scrolling=False
 		
-		self.banned_uids=[59999,69999]
-		self.user_uid=os.getuid()
+		
 		
 		try:
 			#self.msg_text=self.client.get_zc_messages("","ZCenterVariables",self.lang)
