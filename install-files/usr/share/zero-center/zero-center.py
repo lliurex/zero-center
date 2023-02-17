@@ -236,8 +236,8 @@ class ZeroCenter:
 			self.msg_text=""
 		
 		# GUEST USER
-		if os.getuid()==59999:
-			self.msg_text=_("'guest-user' user is not allowed to use zero-center")
+		if os.getuid()>=59999:
+			self.msg_text=_("'%s' user is not allowed to use zero-center"%os.getlogin())
 		#self.msg_text="hi, i'm a long enough text so that it won't show in just one line. I wonder how many lines I can get inside the box. In my restless dreams I see that town, Silent Hill. I don't know what to type, but I have to keep typing"
 		#57
 		
