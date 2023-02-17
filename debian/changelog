@@ -1,3 +1,9 @@
+zero-center (1:2.89.3) focal; urgency=medium
+
+  * fixed translation
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 17 Feb 2023 11:37:10 +0100
+
 zero-center (1:2.89.2) focal; urgency=medium
 
   * removing users from 59999 and beyond from *
