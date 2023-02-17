@@ -1,3 +1,9 @@
+zero-center (1:2.89.5) focal; urgency=medium
+
+  * banned_uid list instead of uid range
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 17 Feb 2023 14:33:46 +0100
+
 zero-center (1:2.89.4) focal; urgency=medium
 
   * fixed * for users < 59999
