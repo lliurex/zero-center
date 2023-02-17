@@ -67,7 +67,7 @@ msgstr ""
 msgid "<b>%s</b> is being executed. Are you sure you want to exit?"
 msgstr ""
 
-msgid "'guest-user' user is not allowed to use zero-center"
+msgid "'%s' user is not allowed to use zero-center"
 msgstr ""
 
 #: ../install-files/usr/bin/zero-installer:5
