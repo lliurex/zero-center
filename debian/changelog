@@ -1,4 +1,4 @@
-zero-center (1:2.89.5) focal; urgency=medium
+zero-center (1:2.89.6) focal; urgency=medium
 
   * banned_uid list instead of uid range
 
