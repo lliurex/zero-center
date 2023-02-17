@@ -405,7 +405,7 @@ class ZeroCenter:
 		self.user_groups = [ grp.getgrgid(x).gr_name for x in groups_gids ]
 
 		# GUEST USER
-		if os.getuid()!=59999:
+		if os.getuid()<59999:
 			self.user_groups.append("*")
 			
 		print('User Groups: %s'%self.user_groups)
