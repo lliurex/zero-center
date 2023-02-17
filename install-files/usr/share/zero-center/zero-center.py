@@ -200,6 +200,9 @@ class ZeroCenter:
 		self.msg_x=0
 		self.scrolling=False
 		
+		self.banned_uids=[59999,69999]
+		self.user_uid=os.getuid()
+		
 		try:
 			#self.msg_text=self.client.get_zc_messages("","ZCenterVariables",self.lang)
 			ret=self.client.get_zc_messages("","ZCenterVariables",self.lang)
@@ -236,7 +239,7 @@ class ZeroCenter:
 			self.msg_text=""
 		
 		# GUEST USER
-		if os.getuid()>=59999:
+		if self.user_uid in self.banned_uids:
 			self.msg_text=_("'%s' user is not allowed to use zero-center")%os.getlogin()
 		#self.msg_text="hi, i'm a long enough text so that it won't show in just one line. I wonder how many lines I can get inside the box. In my restless dreams I see that town, Silent Hill. I don't know what to type, but I have to keep typing"
 		#57
@@ -405,7 +408,7 @@ class ZeroCenter:
 		self.user_groups = [ grp.getgrgid(x).gr_name for x in groups_gids ]
 
 		# GUEST USER
-		if os.getuid()<59999:
+		if self.user_uid not in self.banned_uids:
 			self.user_groups.append("*")
 			
 		print('User Groups: %s'%self.user_groups)
