@@ -14,7 +14,7 @@
 
     case "${prev}" in
       getlist)
-         local groups="-v --verbose admins teachers students all"
+         local groups="-v --verbose admins teachers students others"
          COMPREPLY=( $(compgen -W "${groups}" -- ${cur}) )
          return 0
          ;;
