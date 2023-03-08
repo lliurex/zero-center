@@ -10,7 +10,7 @@
     #
     #  The basic options we'll complete.
     #
-    opts="getlist getzmdinfo help"
+    opts="getlist getzmdinfo getpkglist help"
 
     case "${prev}" in
       getlist)
