@@ -11,6 +11,7 @@ from os import listdir
 from os.path import isfile, isfile,isdir,join
 from clint import arguments
 from clint.textui import puts, indent
+import re
 
 
 class ZeroReport(object):
@@ -219,6 +220,7 @@ class ZeroReport(object):
 		outputFilePath=os.path.join(self.outputFolder,outputFileName)
 		fieldsNames=['Categoria','Zomando','Aplicación', 'Admins','Teachers','Students','Others','Descripcion']
 
+		self.initDbus()
 		tmpContent=self.getZmdContent(True)
 		
 		if len(tmpContent)>0:
@@ -228,8 +230,9 @@ class ZeroReport(object):
 				writer.writeheader()
 				for item in tmpContent:
 					for pkg in item["pkgList"]:
-						writer.writerow({fieldsNames[0]:item["category"],fieldsNames[1]:item["zomando"],fieldsNames[2]:pkg,fieldsNames[3]:item["adminMatch"],fieldsNames[4]:item["teacherMatch"],fieldsNames[5]:item["studentMatch"],fieldsNames[6]:item["allMatch"],fieldsNames[7]:item["description"]})
-
+						description=self.getPkgInfo(pkg)
+						writer.writerow({fieldsNames[0]:item["category"],fieldsNames[1]:item["zomando"],fieldsNames[2]:pkg,fieldsNames[3]:item["adminMatch"],fieldsNames[4]:item["teacherMatch"],fieldsNames[5]:item["studentMatch"],fieldsNames[6]:item["allMatch"],fieldsNames[7]:description})
+						
 			print('   [Zero-Report]: Global package list generated. You can find it in: %s'%outputFilePath)
 		else:
 			print('   [Zero-Report]: Not found information to generate report')
@@ -258,8 +261,9 @@ class ZeroReport(object):
 							key,value=line.split("=")
 							if key=="Category":
 								tmpCateg=value.strip("\n")
-							if key=="Comment[es]":
-								tmpDescription=value
+							if not getPkgs:
+								if key=="Comment[es]":
+									tmpDescription=value.strip("\n")
 							if key=="Groups":
 								tmpGroups=value.strip("\n").split(";")
 								if 'sudo' in tmpGroups or 'admins' in tmpGroups:
@@ -283,8 +287,9 @@ class ZeroReport(object):
 						tmpZmd['teacherMatch']=teacherMatch
 						tmpZmd['studentMatch']=studentMatch
 						tmpZmd['allMatch']=allMatch
-						tmpZmd['description']=tmpDescription
-						if getPkgs:
+						if not getPkgs:
+							tmpZmd['description']=re.sub('["]','',tmpDescription)
+						else:
 							tmpZmd['pkgList']=self.getZmdPkg(zomando,False)
 						tmpContent.append(tmpZmd)
 	
