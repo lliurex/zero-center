@@ -1,0 +1,461 @@
+#! /usr/bin/python3
+import sys
+import os
+import subprocess
+import csv
+import json
+import shutil
+import lliurexstore.storeManager as StoreManager
+import html2text
+import time
+from os import listdir
+from os.path import isfile, isfile,isdir,join
+from clint import arguments
+from clint.textui import puts, indent
+import re
+
+
+class ZeroReport(object):
+
+	def __init__(self):
+
+		self.sourceFolder="/usr/share/zero-center/applications"
+		self.zmdFolder="/usr/share/zero-center/zmds"
+		user=os.environ["USER"]
+		self.outputFolder="/home/%s"%user
+		self.outputFile="zerocenter-report"
+		self.zmdInfoFolder=os.path.join(self.outputFolder,"Fichas_Zomandos")
+		self.verbose=False
+		self.globalListFile="zerocenter-pkg-list"
+		self.flavour=self.getFlavour()
+
+	#def __init__
+
+	def getList(self,groupsToReport,verbose):
+
+		print('   [Zero-Report]: Generating report. Wait a moment...')
+		self.groupsToReport=groupsToReport
+		self.verbose=verbose
+		if self.verbose:
+			self.initStore()
+		self.fieldsNames=self.generateFieldsNames()
+		self.generateReport()
+		sys.exit(0)
+
+	#def getList
+
+	def getZmdInfo(self,zmd):
+
+		print('   [Zero-Report]: Generating zomando info. Wait a moment...')
+		self.initStore()
+		self.generateZmdReport(zmd)
+		sys.exit(0)
+		
+	#def getZmdInfo
+
+	def getPkgList(self):
+		
+		print('   [Zero-Report]: Generating global package list report. Wait a moment...')
+		self.generateGlobalReport()
+		sys.exit(0)
+
+	#def getGlobalList
+	
+	def getFlavour(self):
+
+		flavours=""
+		version=""
+		cmd='lliurex-version -v'
+		p=subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
+		result=p.communicate()[0]
+
+		if type(result) is bytes:
+			result=result.decode()
+
+		tmpFlavours = [ x.strip() for x in result.split(',') ]
+		for item in tmpFlavours:
+			flavours="%s_%s"%(flavours,item)
+
+		cmd='lliurex-version -n'
+		p=subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
+		result=p.communicate()[0]
+
+		if type(result) is bytes:
+			result=result.decode()
+
+		version=result.strip()
+		flavours="%s_%s"%(flavours,version)
+
+		return flavours[1:]
+
+	#def getFlavour
+
+	def initStore(self):
+
+		self.storeManager=StoreManager.StoreManager(autostart=False)
+
+	#def initStore
+
+	def generateFieldsNames(self):
+
+		fieldsNames=['Categoria','Zomando']
+
+		if self.groupsToReport[3]:
+			fieldsNames.append('Admins')
+			fieldsNames.append('Teachers')
+			fieldsNames.append('Students')
+			fieldsNames.append('Others')
+
+		else:
+			if self.groupsToReport[0]:
+				fieldsNames.append('Admins')
+			if self.groupsToReport[1]:
+				fieldsNames.append('Teachers')
+			if self.groupsToReport[2]:
+				fieldsNames.append('Students')
+
+		fieldsNames.append('Descripcion')
+
+		return fieldsNames
+
+	#def generateFieldsNames
+
+	def generateReport(self):
+
+		ouputFileName="%s_%s.csv"%(self.outputFile,self.flavour)
+		outputFilePath=os.path.join(self.outputFolder,ouputFileName)
+
+		if self.verbose:
+			self.zmdInfoFolder="%s_%s"%(self.zmdInfoFolder,self.flavour)
+			if os.path.exists(self.zmdInfoFolder):
+				shutil.rmtree(self.zmdInfoFolder)
+			os.mkdir(self.zmdInfoFolder)
+
+		tmpContent=self.getZmdContent()
+			
+		if len(tmpContent)>0:
+			tmpContent=sorted(tmpContent,key=lambda d:(d["category"],d["zomando"]))	
+
+			with open(outputFilePath,'w',newline='') as csvFile:
+				writer=csv.DictWriter(csvFile,fieldnames=self.fieldsNames)
+				writer.writeheader()		
+
+				for item in tmpContent:
+
+					if self.groupsToReport[3]:
+						writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["adminMatch"],self.fieldsNames[3]:item["teacherMatch"],self.fieldsNames[4]:item["studentMatch"],self.fieldsNames[5]:item["allMatch"],self.fieldsNames[6]:item["description"]})
+					else:
+						if self.groupsToReport[0]:
+							if not self.groupsToReport[1] and not self.groupsToReport[2]:
+								writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["adminMatch"],self.fieldsNames[3]:item["description"]})
+							elif self.groupsToReport[1] and not self.groupsToReport[2]:
+								writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["adminMatch"],self.fieldsNames[3]:item["teacherMatch"],self.fieldsNames[4]:item["description"]})
+							elif self.groupsToReport[1] and self.groupsToReport[2]:
+								writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["adminMatch"],self.fieldsNames[3]:item["teacherMatch"],self.fieldsNames[4]:item["studentMatch"],self.fieldsNames[5]:item["description"]})
+							elif not self.groupsToReport[1] and self.groupsToReport[2]:
+								writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["adminMatch"],self.fieldsNames[3]:item["studentMatch"],self.fieldsNames[4]:item["description"]})
+
+						else:
+							if self.groupsToReport[1]:
+								if not self.groupsToReport[2]:
+									writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["teacherMatch"],self.fieldsNames[3]:item["description"]})
+								else:
+									writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["teacherMatch"],self.fieldsNames[3]:item["studentMatch"],self.fieldsNames[4]:item["description"]})
+							else:
+								writer.writerow({self.fieldsNames[0]:item["category"],self.fieldsNames[1]:item["zomando"],self.fieldsNames[2]:item["studentMatch"],self.fieldsNames[3]:item["description"]})
+											
+					if self.verbose:
+						self.generateZmdReport(item["zomando"])
+
+			
+			print('   [Zero-Report]: Report generated. You can find it in: %s'%outputFilePath)
+			if self.verbose:
+				print('   [Zero-Report]: Aditional information about zomandos generated. You can find it in: %s'%self.zmdInfoFolder)
+		else:
+			print('   [Zero-Report]: Not found information to generate report')
+		
+
+	#def generateReport
+
+	def generateZmdReport(self,zmd):
+
+		zmdFileName="%s.zmd"%zmd
+		zmdFile=os.path.join(self.zmdFolder,zmdFileName)
+
+		fieldsNames=['Aplication',"Descripcion"]
+		if self.verbose:
+			ouputFileName="%s_.csv"%(zmd)
+			outputFilePath=os.path.join(self.zmdInfoFolder,ouputFileName)
+		else:
+			outputFileName="%s_%s.csv"%(zmd,self.flavour)
+			outputFilePath=os.path.join(self.outputFolder,outputFileName)
+
+		pkgList=self.getZmdPkg(zmd,True)
+	
+		if len(pkgList)>1:
+			with open(outputFilePath,'w',newline='') as csvFile:
+				writer=csv.DictWriter(csvFile,fieldnames=fieldsNames)
+				writer.writeheader()
+				for pkg in pkgList:
+					description=self.getPkgInfo(pkg)
+					writer.writerow({fieldsNames[0]:pkg,fieldsNames[1]:description})
+	
+			if not self.verbose:
+				print('   [Zero-Report]: Zomando information generated. You can find it in: %s'%outputFilePath)
+		else:
+			if not self.verbose:
+				print('   [Zero-Report]: The indicated zomando contains only one application')
+
+	#def generateZmdReport
+
+	def generateGlobalReport(self):
+
+		outputFileName="%s_%s.csv"%(self.globalListFile,self.flavour)
+		outputFilePath=os.path.join(self.outputFolder,outputFileName)
+		fieldsNames=['Categoria','Zomando','Aplicación', 'Admins','Teachers','Students','Others','Descripcion']
+
+		self.initStore()
+		tmpContent=self.getZmdContent(True)
+		
+		if len(tmpContent)>0:
+			tmpContent=sorted(tmpContent,key=lambda d:(d["category"],d["zomando"]))	
+			with open(outputFilePath,'w',newline='') as csvFile:
+				writer=csv.DictWriter(csvFile,fieldnames=fieldsNames)
+				writer.writeheader()
+				for item in tmpContent:
+					for pkg in item["pkgList"]:
+						description=self.getPkgInfo(pkg)
+						writer.writerow({fieldsNames[0]:item["category"],fieldsNames[1]:item["zomando"],fieldsNames[2]:pkg,fieldsNames[3]:item["adminMatch"],fieldsNames[4]:item["teacherMatch"],fieldsNames[5]:item["studentMatch"],fieldsNames[6]:item["allMatch"],fieldsNames[7]:description})
+						
+			print('   [Zero-Report]: Global package list generated. You can find it in: %s'%outputFilePath)
+		else:
+			print('   [Zero-Report]: Not found information to generate report')
+
+	#def generateGlobalReport
+
+	def getZmdContent(self,getPkgs=False):
+
+		tmpContent=[]
+
+		for item in listdir(self.sourceFolder):
+			t=join(self.sourceFolder,item)
+			if isfile(t):
+				tmpZmd={}
+				zomando=item.split(".app")[0]
+				adminMatch=""
+				teacherMatch=""
+				studentMatch=""
+				allMatch=""
+				try:
+					with open(t,'r',encoding='utf-8') as fd:
+						content=fd.readlines()
+						fd.close()
+					for line in content:
+						try:
+							key,value=line.split("=")
+							if key=="Category":
+								tmpCateg=value.strip("\n")
+							if not getPkgs:
+								if key=="Comment[es]":
+									tmpDescription=value.strip("\n")
+							if key=="Groups":
+								tmpGroups=value.strip("\n").split(";")
+								if 'sudo' in tmpGroups or 'admins' in tmpGroups:
+									adminMatch='X'
+								if 'teachers' in tmpGroups:
+									teacherMatch='X'
+								if 'students' in tmpGroups:
+									studentMatch='X'
+								if '*' in tmpGroups:
+									adminMatch='X'
+									teacherMatch='X'
+									studentMatch='X'
+									allMatch='X'
+						except:
+							pass
+				
+					if tmpCateg!="":
+						tmpZmd['category']=tmpCateg.capitalize()
+						tmpZmd['zomando']=zomando
+						tmpZmd['adminMatch']=adminMatch
+						tmpZmd['teacherMatch']=teacherMatch
+						tmpZmd['studentMatch']=studentMatch
+						tmpZmd['allMatch']=allMatch
+						if not getPkgs:
+							tmpZmd['description']=re.sub('["]','',tmpDescription)
+						else:
+							tmpZmd['pkgList']=self.getZmdPkg(zomando,False)
+						tmpContent.append(tmpZmd)
+	
+				except Exception as e:
+					print('   [Zero-Report]: Error processing %s:%s'%(zomando,str(e)))
+					pass
+
+		return tmpContent
+
+	#def getZmdContent
+
+	def getZmdPkg(self,zmdName,onlyList):
+
+		tmpPkg=[]
+		zmdFile="%s.zmd"%zmdName
+		zmdPath=os.path.join(self.zmdFolder,zmdFile)
+
+		if os.path.exists(zmdPath):
+			with open(zmdPath,'r') as fd:
+				content=fd.readlines()
+				for line in content:
+					if '.epi' in line:
+						if 'epi-gtk' in line:
+							line=line.split('epi-gtk')
+							try:
+								epiFile=line[1].strip("\n").strip(" ")
+								tmpPkg=sorted(self.readEpiFile(epiFile,onlyList))
+							except Exception as e:
+								print('   [Zero-Report]: Error processing %s:%s'%(epiFile,str(e)))
+								pass
+		else:
+			print('   [Zero-Report]: The indicated zomando %s is not valid'%zmdPath)
+			pass
+	
+		return tmpPkg
+
+	#def getZmdPkg
+
+	def readEpiFile(self,epiFile,onlyList):
+
+		pkgList=[]
+		if os.path.exists(epiFile) and os.path.isfile(epiFile):
+			f=open(epiFile)
+			try:
+				epiLoad=json.load(f)
+				try:
+					match=False
+					if onlyList:
+						if epiLoad["selection_enabled"]["active"]:
+							match=True
+					else:
+						match=True
+					if match:
+						for item in epiLoad["pkg_list"]:
+							pkgList.append(item["name"])
+				except Exception as e:
+					if not self.verbose or not onlyList:
+						print('   [Zero-Report]: The Epi file associtated to indicated zomando only have one package: %s'%(epiFile))
+						sys.exit(1)
+					else:
+						pass
+			except Exception as e:
+				if not self.verbose or not onlyList:
+					print('   [Zero-Report]: Error processing %s:%s'%(epiFile,str(e)))
+					sys.exit(1)
+				else:
+					pass
+
+		return pkgList
+
+	#def readEpiFile
+
+	def getPkgInfo(self,pkg):
+
+		description="No_disponible"
+		action="info"
+
+		try:
+			self.storeManager.execute_action(action,pkg)
+			while self.storeManager.is_action_running(action):
+				time.sleep(0.2)	
+
+			ret=self.storeManager.get_status(action)
+
+			if ret["status"]==0:
+				data=self.storeManager.get_result(action)
+				if len(data)>0:
+					info=data["info"][0]["description"]
+					if info !="":
+						h=html2text.HTML2Text()
+						h.body_width=400
+						description=h.handle(info)
+						description=description.replace("&lt;", "<")
+						description=description.replace("&gt;", ">")
+						description=description.replace("&amp;", "&")	
+		except:
+			pass
+
+		return description
+
+	#def getPkgInfo
+
+#class ZeroReport
+
+def	usage():
+	puts("Usage")
+	with indent(4):
+		puts("zerocenter-report ACTION [FLAGS...]")
+		puts("Actions")
+		with indent(4):
+			puts("getlist [admins|teachers|students|others]: Generate report about zero-center content for indicated groups (separeted by space)")	
+			puts("getzmdinfo [zomando]: Generate report about the packages offered by the indicated zomando")
+			puts("getpkglist: Generate report with a list of all packages offered by zero-center group by category and zomando")
+		puts("Flags")
+		with indent(4):
+			puts("-h --help: Show help")
+			puts("-v --verbose: Generate additional information about the packages offered by the zomando. Valid only for getlist action")
+			
+	sys.exit(1)		
+
+#def usage
+
+if __name__ == '__main__':
+
+	groupsToReport=[]
+	reportAdmin=False
+	reportTeacher=False
+	reportStudent=False
+	reportAll=False
+	verbose=False
+	groupsRef=['admins','teachers','students','others']
+
+	args = arguments.Args().copy
+	if args.contains(["-h","--help"]) or len(args.all) == 0 :
+		usage()
+	if args.contains(["-v","--verbose"]):
+		index= args.first(["-v","--verbose"])
+		args.pop(index)
+		verbose=True
+
+	action=args.pop(0)	
+	if action=="getlist":
+		if len(args)>0:
+			for item in args.all:
+				if item in groupsRef:
+					if item==groupsRef[3]:
+						reportAll=True
+						break
+					elif item==groupsRef[0]:
+						reportAdmin=True
+					elif item==groupsRef[1]:
+						reportTeacher=True
+					elif item==groupsRef[2]:
+						reportStudent=True
+		else:
+			reportAll=True
+		
+		if reportAll or reportAdmin or reportTeacher or reportStudent:
+			groupsToReport=[reportAdmin,reportTeacher,reportStudent,reportAll]
+			zeroReport = ZeroReport()	
+			sys.exit(zeroReport.getList(groupsToReport,verbose))
+		else:
+			usage()
+	elif action=="getzmdinfo":
+		if len(args)>0:
+			zmd=args.get(0)
+			zeroReport=ZeroReport()
+			sys.exit(zeroReport.getZmdInfo(zmd))
+		else:
+			usage()
+	elif action=="getpkglist":
+		zeroReport=ZeroReport()
+		sys.exit(zeroReport.getPkgList())
+	else:
+		usage()
