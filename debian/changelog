@@ -1,3 +1,9 @@
+zero-center (1:2.62.2) bionic; urgency=medium
+
+  * Added new option in zerocenter-report to generate a list of all pkgs offered by zero-center
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Fri, 10 Mar 2023 12:35:11 +0100
+
 zero-center (1:2.62.1) bionic; urgency=medium
 
   * Added translations
