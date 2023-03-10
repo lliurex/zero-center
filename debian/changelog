@@ -1,3 +1,9 @@
+zero-center (1:2.89.7) focal; urgency=medium
+
+  * Improved zerocenter-report to generate a list of all packages offered by zero-center
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Fri, 10 Mar 2023 11:36:10 +0100
+
 zero-center (1:2.89.6) focal; urgency=medium
 
   * banned_uid list instead of uid range
