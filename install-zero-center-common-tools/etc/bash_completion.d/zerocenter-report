@@ -4,13 +4,13 @@
  	local cur prev opts base
  	COMPREPLY=()
  	cur="${COMP_WORDS[COMP_CWORD]}"
-   prev="${COMP_WORDS[COMP_CWORD-1]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
 
 
     #
     #  The basic options we'll complete.
     #
-    opts="getlist getzmdinfo help"
+    opts="getlist getzmdinfo getpkglist help"
 
     case "${prev}" in
       getlist)
