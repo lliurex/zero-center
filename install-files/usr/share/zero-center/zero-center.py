@@ -447,10 +447,11 @@ class ZeroCenter:
 		self.msg_label.set_tooltip_text(self.msg_text)
 		
 		self.hidden_button=builder.get_object("button1")
-		self.hidden_button.grab_focus()
+		#self.hidden_button.grab_focus()
 		
 		self.search_entry=builder.get_object("entry")
 		self.search_entry.connect("changed",self.entry_changed)
+		self.search_entry.grab_focus()
 		
 		self.progress_bar=builder.get_object("progressbar")
 		self.progress_label=builder.get_object("progress_label")
