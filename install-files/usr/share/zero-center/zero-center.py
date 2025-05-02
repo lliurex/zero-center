@@ -143,7 +143,8 @@ class AppParser:
 		for item in os.listdir(dir):
 			file_path=self.APP_PATH+item
 			app=self.parse_file(file_path)
-			self.add_app(app)
+			if app["Show"].lower()=="true":
+				self.add_app(app)
 			
 	#def parse_all
 
@@ -172,6 +173,10 @@ class AppParser:
 		
 		app["expanding"]=False
 		app["restoring"]=False
+		
+		if "Show" not in app:
+			app["Show"]="True"
+			
 
 		return app
 		
