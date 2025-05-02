@@ -1,3 +1,11 @@
+zero-center (1:2.300) noble; urgency=medium
+
+  * Show configuration key in .app is now parsed. If set to false, zcenter
+    hides said app.
+  * Search box has focus by default 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 02 May 2025 10:15:56 +0200
+
 zero-center (1:2.289.7) noble; urgency=medium
 
   * Initial release for Noble
