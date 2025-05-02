@@ -143,7 +143,8 @@ class AppParser:
 		for item in os.listdir(dir):
 			file_path=self.APP_PATH+item
 			app=self.parse_file(file_path)
-			self.add_app(app)
+			if app["Show"].lower()=="true":
+				self.add_app(app)
 			
 	#def parse_all
 
@@ -172,6 +173,10 @@ class AppParser:
 		
 		app["expanding"]=False
 		app["restoring"]=False
+		
+		if "Show" not in app:
+			app["Show"]="True"
+			
 
 		return app
 		
@@ -447,10 +452,11 @@ class ZeroCenter:
 		self.msg_label.set_tooltip_text(self.msg_text)
 		
 		self.hidden_button=builder.get_object("button1")
-		self.hidden_button.grab_focus()
+		#self.hidden_button.grab_focus()
 		
 		self.search_entry=builder.get_object("entry")
 		self.search_entry.connect("changed",self.entry_changed)
+		self.search_entry.grab_focus()
 		
 		self.progress_bar=builder.get_object("progressbar")
 		self.progress_label=builder.get_object("progress_label")
