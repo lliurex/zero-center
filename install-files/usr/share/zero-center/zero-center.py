@@ -110,12 +110,13 @@ class AppParser:
 	ZMD_PATH=BASE_DIR+"zmds/"
 	
 	
-	def __init__(self):
+	def __init__(self,force_show=False):
 		
 		self.categories=["ID","Name","Comment","Icon","Category","Icon","ScriptPath","Groups","Service","Locks"]
 		self.apps={}
 		self.app_list=[]
 		self.configured=[]
+		self.force_show=force_show
 		#print("[ZeroCenter] Parsing apps...")
 		self.parse_all()
 		
@@ -143,7 +144,7 @@ class AppParser:
 		for item in os.listdir(dir):
 			file_path=self.APP_PATH+item
 			app=self.parse_file(file_path)
-			if app["Show"].lower()=="true":
+			if app["Show"].lower()=="true" or self.force_show:
 				self.add_app(app)
 			
 	#def parse_all
@@ -188,8 +189,9 @@ class AppParser:
 
 class ZeroCenter:
 	
-	def __init__(self):
+	def __init__(self,force_show=False):
 		
+		self.force_show=False
 		self.banned_uids=[59999,69999]
 		self.user_uid=os.getuid()
 		
@@ -197,12 +199,13 @@ class ZeroCenter:
 		self.client = xmlrpc.client.ServerProxy('https://127.0.0.1:9779',context=context,allow_none=True)
 		self.create_user_env()
 		self.categories_parser=CategoriesParser()
-		self.app_parser=AppParser()
 		self.configured_apps=[]
-		self.get_states()
+		if not force_show:
+			self.app_parser=AppParser()
+			self.get_states()
 		
 		self.mprocess=multiprocessing.Process()
-		self.commands=["set-configured","set-non-configured","set-failed","set-custom-text","add-zero-center-notification","remove-zero-center-notification","help","add-pulsating-color","remove-pulsating-color","non-animated","animated"]
+		self.commands=["set-configured","set-non-configured","set-failed","set-custom-text","add-zero-center-notification","remove-zero-center-notification","help","add-pulsating-color","remove-pulsating-color","non-animated","animated","show-all"]
 		self.drawing_mode=True
 		self.msg_text=""
 		self.msg_x=0
@@ -1762,7 +1765,9 @@ if __name__=="__main__":
 		if sys.argv[1]=="non-animated":
 			zc.drawing_mode=False
 		
-	
-	
+		if sys.argv[1]=="show-all":
+			zc.app_parser=AppParser(force_show=True)
+			zc.configured_apps=[]
+			zc.get_states()
 	zc.start_gui()
 

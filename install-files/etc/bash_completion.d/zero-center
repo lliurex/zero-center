@@ -9,7 +9,7 @@ _zero-center()
     #
     #  The basic options we'll complete.
     #
-    opts="set-configured set-non-configured set-failed set-custom-text add-zero-center-notification remove-zero-center-notification add-pulsating-color remove-pulsating-color non-animated animated help"
+    opts="set-configured set-non-configured set-failed set-custom-text add-zero-center-notification remove-zero-center-notification add-pulsating-color remove-pulsating-color non-animated animated help show-all"
 
 
     #
