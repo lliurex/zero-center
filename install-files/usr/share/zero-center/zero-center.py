@@ -131,8 +131,8 @@ class AppParser:
 			
 			self.apps[app["Category"].lower()].append(app)
 			self.app_list.append(app["ID"])
-		except:
-			pass
+		except Exception as e:
+			print(e)
 			
 	#def add_app
 	
@@ -200,9 +200,8 @@ class ZeroCenter:
 		self.create_user_env()
 		self.categories_parser=CategoriesParser()
 		self.configured_apps=[]
-		if not force_show:
-			self.app_parser=AppParser()
-			self.get_states()
+		self.app_parser=AppParser()
+		self.get_states()
 		
 		self.mprocess=multiprocessing.Process()
 		self.commands=["set-configured","set-non-configured","set-failed","set-custom-text","add-zero-center-notification","remove-zero-center-notification","help","add-pulsating-color","remove-pulsating-color","non-animated","animated","show-all"]
@@ -1690,23 +1689,37 @@ if __name__=="__main__":
 			
 		if sys.argv[1] == "set-configured":
 			key=check_root()
+			zc.configured_apps=[]
+			zc.app_parser=AppParser(force_show=True)
+			zc.get_states()
 			zc.set_configured(sys.argv[2],key)
 			
 		if sys.argv[1] == "set-non-configured":
 			key=check_root()
+			zc.configured_apps=[]
+			zc.app_parser=AppParser(force_show=True)
+			zc.get_states()
 			zc.set_non_configured(sys.argv[2],key)
 			
 		if sys.argv[1] == "set-failed":
 			key=check_root()
+			zc.configured_apps=[]
+			zc.app_parser=AppParser(force_show=True)
+			zc.get_states()
 			zc.set_failed(sys.argv[2],key)
 			
 		if sys.argv[1] == "set-custom-text":
 			key=check_root()
+			zc.configured_apps=[]
+			zc.app_parser=AppParser(force_show=True)
+			zc.get_states()
 			zc.set_custom_text(sys.argv[2],sys.argv[3],key)
 			
 		if sys.argv[1] == "add-zero-center-notification":
 			key=check_root()
-			
+			zc.configured_apps=[]
+			zc.app_parser=AppParser(force_show=True)
+			zc.get_states()			
 			try:
 				app=sys.argv[2]
 			except:
@@ -1731,6 +1744,9 @@ if __name__=="__main__":
 		if sys.argv[1] == "remove-zero-center-notification":
 			
 			key=check_root()
+			zc.configured_apps=[]
+			zc.app_parser=AppParser(force_show=True)
+			zc.get_states()
 			
 			try:
 				app=sys.argv[2]
@@ -1741,6 +1757,10 @@ if __name__=="__main__":
 			
 		if sys.argv[1] == "add-pulsating-color":
 			key=check_root()
+			zc.configured_apps=[]
+			zc.app_parser=AppParser(force_show=True)
+			zc.get_states()
+			
 			try:
 				app=sys.argv[2]
 			except:
@@ -1750,6 +1770,9 @@ if __name__=="__main__":
 				
 		if sys.argv[1] == "remove-pulsating-color":
 			key=check_root()
+			zc.configured_apps=[]
+			zc.app_parser=AppParser(force_show=True)
+			zc.get_states()
 			
 			try:
 				app=sys.argv[2]
@@ -1766,8 +1789,9 @@ if __name__=="__main__":
 			zc.drawing_mode=False
 		
 		if sys.argv[1]=="show-all":
-			zc.app_parser=AppParser(force_show=True)
 			zc.configured_apps=[]
+			zc.app_parser=AppParser(force_show=True)
 			zc.get_states()
+			
 	zc.start_gui()
 
