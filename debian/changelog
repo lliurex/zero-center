@@ -1,3 +1,9 @@
+zero-center (1:2.192) jammy; urgency=medium
+
+  * better language support
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 22 Jul 2026 08:35:54 +0200
+
 zero-center (1:2.190) jammy; urgency=medium
 
   * search entry grabs focus  
