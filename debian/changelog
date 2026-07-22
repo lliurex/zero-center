@@ -1,3 +1,9 @@
+zero-center (1:2.303) noble; urgency=medium
+
+  * better language support 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 22 Jul 2026 08:36:44 +0200
+
 zero-center (1:2.302) noble; urgency=medium
 
   * trying to support hidden apps when calling set-configured , set-failed ... 
