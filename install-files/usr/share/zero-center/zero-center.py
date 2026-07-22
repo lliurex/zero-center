@@ -366,7 +366,7 @@ class ZeroCenter:
 				self.language.insert(self.language.index("es_ES")+1,"es")
 			self.lang=self.lang.split("_")[0]
 			
-			if "ca_ES@valencia" in self.language:
+			if "ca_ES@valencia" in self.language or "ca@valencia" in self.language:
 				self.language.insert(self.language.index("ca_ES@valencia"),"qcv")
 		except:
 			fallback_lang()
