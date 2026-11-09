@@ -1,0 +1,45 @@
+#!/usr/bin/python3
+import os
+from shutil import move
+from devscripts import control
+from edupals.zerocenter.zerocenterhelper import ZeroCenterDH
+
+import re
+import glob
+
+PATRON = re.compile(r"""
+    "([^"\n]+\.epi)"                              # "ruta con espacios.epi"
+  | '([^'\n]+\.epi)'                              # 'ruta con espacios.epi'
+  | ([^\s'"=;|&<>()`,]+\.epi)(?=[\s'"=;|&<>()`,]|$)  # ruta sin comillas
+""", re.VERBOSE)
+
+def search_epi_path(fichero):
+    with open(fichero, encoding="utf-8") as f:
+        contenido = f.read()
+    return [m.group(1) or m.group(2) or m.group(3) for m in PATRON.finditer(contenido)]
+
+def main():
+    zeroinstaller = ZeroCenterDH()
+    if os.path.exists('debian/control'):
+        control_handler = control.Control('debian/control')
+        packages = [e['Package'] for e in control_handler.paragraphs if 'Package' in e]
+        source = [e['Source'] for e in control_handler.paragraphs if 'Source' in e][0]
+        if source in packages:
+            if os.path.exists('debian/zero'):
+                move('debian/zero', 'debian/{0}.zero'.format(source))
+        for pkg in packages:
+            file_helper = "debian/{pkg}.zero".format(pkg=pkg)
+            if os.path.exists(file_helper):
+                files_to_process = []
+                with open(file_helper) as file_descriptor:
+                    files_to_process = [ x.strip() for x in file_descriptor.readlines() ]
+                for file_path in files_to_process:
+                    app_file = next(glob.iglob(f"{file_path}/*.app"), None)
+                    zmd_file = next(glob.iglob(f"{file_path}/*.zmd"), None)
+                    epi_path = None
+                    if zmd_file is not None:
+                        epi_path = search_epi_path(zmd_file)
+                    print(app_file, f"debian/{pkg}",  epi_path)
+
+if __name__ == '__main__':
+    main()

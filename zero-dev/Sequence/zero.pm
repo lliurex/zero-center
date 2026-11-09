@@ -20,11 +20,13 @@ foreach my $item (@{$dh{WITH}}){
 
 if ($found and ($pkexec_counter < $zero_counter)){
         insert_before('dh_pkexec','dh_zeroinstaller');
+	insert_after('dh_installdeb','dh_zeroappstreaminfo')
 }
 else{
         insert_after('dh_install','dh_zeroinstaller');
         if(not $found){
 		insert_after('dh_zeroinstaller','dh_pkexec');
         }   
+	insert_after('dh_installdeb','dh_zeroappstreaminfo')
 }
 1;
