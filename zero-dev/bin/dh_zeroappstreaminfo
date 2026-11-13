@@ -194,10 +194,10 @@ def _process_epi_file(epi_path,cmp,components_array):
     for pkg in pkg_list:
         _add_artifacts_from_epi(pkg,rls)
         included_cmp=appstream.Component()
-        pkgId=pkg.get("name")
-        if pkgId==None:
+        pkg_id=pkg.get("name")
+        if pkg_id==None:
             continue
-        included_cmp.set_id(pkgId)
+        included_cmp.set_id(pkg_id)
         pkgname=pkg.get("custom_name",pkg["name"])
         if pkgname==None:
             continue
@@ -206,6 +206,15 @@ def _process_epi_file(epi_path,cmp,components_array):
         _set_icon_from_epi(pkg,included_cmp,icon_path)
         #_setEpiBundle(pkg,included_cmp)
         included_cmp.set_pkgname(cmp.get_pkgname())
+        # set launchable as zmd launchable + pkgname
+        launchable=cmp.get_launchable(appstream.LaunchableKind.UNKNOWN)
+        if launchable!=None:
+            included_launchable=appstream.Launchable()
+            included_launchable.set_kind(appstream.LaunchableKind.UNKNOWN)
+            entries=launchable.get_entries()
+            entries[0]+=" {}".format(pkg_id)
+            included_launchable.add_entry(entries[0])
+            included_cmp.add_launchable(included_launchable)
         components_array.append(included_cmp)
 #def _process_epi_file
 
