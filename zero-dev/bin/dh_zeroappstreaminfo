@@ -156,7 +156,6 @@ def _set_icon_from_epi(pkg,included_cmp,icon_path):
 def _add_artifacts_from_epi(pkg,rls):
     artifact=appstream.Artifact()
     artifact.set_kind(appstream.ArtifactKind.BINARY)
-	print(pkg)
     if pkg.get("name")!=None:
         artifact.set_bundle_kind(appstream.BundleKind.TARBALL)
         if pkg.get("type")=="flatpak":
@@ -214,7 +213,7 @@ def _generate_metainfo(app_path,pkg_path,epi_path,zmd_file):
     pkgname=os.path.basename(pkg_path.removesuffix("/"))
     if isinstance(epi_path,list):
         if len(epi_path)>0:
-            epi_path=os.path.join(pkg_path, epi_path[0])
+            epi_path=os.path.join(pkg_path, epi_path[0].removeprefix("/"))
     xml_path=os.path.join(pkg_path,"usr","share","metainfo","{}.appdata.xml".format(pkgname.replace("-",".")))
     cmp=appstream.Component()
     components_array=[]
