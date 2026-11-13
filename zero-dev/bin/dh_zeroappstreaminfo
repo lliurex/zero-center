@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-import os
+import sys,os,json
+import gi
+gi.require_version('AppStream', '1.0')
+from gi.repository import AppStream as appstream
 from shutil import move
 from devscripts import control
 from edupals.zerocenter.zerocenterhelper import ZeroCenterDH
@@ -12,6 +15,232 @@ PATRON = re.compile(r"""
   | '([^'\n]+\.epi)'                              # 'ruta con espacios.epi'
   | ([^\s'"=;|&<>()`,]+\.epi)(?=[\s'"=;|&<>()`,]|$)  # ruta sin comillas
 """, re.VERBOSE)
+
+categoryMap={"configuration":"Settings",
+            "fp":"Education",
+            "internet":"Network",
+            "multimedia":"AudioVideo",
+            "network":"Network",
+            "resources":"Utility",
+            "services":"System",
+            "software":"Utility",
+            "support":"System",
+            "system":"System"
+            }
+
+def _set_name_from_app(line,cmp):
+    lang,name=line.strip().split("=",1)
+    if lang=="Name":
+        lang="C"
+    else:
+        lang=lang.replace("Name[","").removesuffix("]")
+    cmp.set_name(name,lang)
+#def _getAppName
+
+def _set_summary_from_app(line,cmp):
+    lang,comment=line.strip().split("=",1)
+    if lang=="Comment":
+        lang="C"
+    else:
+        lang=lang.replace("Comment[","").removesuffix("]")
+    cmp.set_summary(comment,lang)
+#def _set_summary_from_app
+
+def _set_icon_from_app(line,cmp):
+    icn=line.strip().split("=")[-1]
+    icon=appstream.Icon()
+    icon.set_kind(appstream.IconKind.CACHED)
+    icon.set_name(icn)
+    cmp.add_icon(icon)
+    icnPath="/usr/share/banner/lliurex-neu/{}.png".format(icn)
+    iconL=appstream.Icon()
+    iconL.set_kind(appstream.IconKind.LOCAL)
+    iconL.set_name(icn)
+    iconL.set_filename(icnPath)
+    cmp.add_icon(iconL)
+#def _set_icon_from_app
+
+def _set_category_from_app(line,cmp):
+    cat=line.strip().split("=")[-1]
+    cmp.add_category(categoryMap.get(cat.lower(),cat.capitalize()))
+#def _set_category_from_app
+
+def _set_rating_from_app(line,cmp):
+    grp=line.strip().split("=")[-1]
+    cra=appstream.ContentRating()
+    if grp=="*" or "students" in grp.lower():
+        cra.set_value("appsedu_ambit",appstream.ContentRatingValue.NONE)
+    else:
+        cra.set_value("appsedu_ambit",appstream.ContentRatingValue.MILD)
+    cmp.add_content_rating(cra)
+#def _set_rating_from_app
+
+def _set_id_from_app(line,cmp):
+    cid=line.strip().split("=")[-1].replace("-",".")
+    cmp.set_id(os.path.basename(cid).removesuffix(".zmd"))
+#def _set_id_from_app
+
+def _add_release_from_app(cmp):
+    rel=appstream.Release()
+    rel.set_kind(appstream.ReleaseKind.STABLE)
+    isodate=""
+    release="0.1"
+    if os.path.isfile("debian/changelog"):
+        content=[]
+        with open("debian/changelog","r") as f:
+            content=f.readlines()
+        for line in content:
+            #minimal check. first line of a block must declare urgency=low|medium|high
+            if "urgency" in line and release=="0.1":
+                idx_from=line.index("(")+1
+                idx_to=line.index(")")
+                release=line[idx_from:idx_to]
+            #lines with date begin with "--" and end with "+0[1-9]00"
+            elif "--" in line and line.strip().endswith("00"):
+                idx_from=line.index(",")+1
+                idx_to=line.index("+")
+                release_date=line[idx_from:idx_to].strip()
+                release_date_array=release_date.split(" ")
+                month={"jan":"01","feb":"02","mar":"03","apr":"04","may":"05",
+                    "jun":"06","jul":"07","aug":"08","sep":"09","oct":"10",
+                    "nov":"11","dec":"12"}
+                isodate="{0}-{1}-{2}".format(release_date_array[2],
+                                        month.get(release_date_array[1].lower(),"01")
+                                        ,release_date_array[0])
+                #exit loop when reached
+                break
+    rel.set_version(release)
+    if isodate!="":
+        rel.set_date(isodate)
+    cmp.add_release(rel)
+#def _add_release_from_app(cmp):
+
+def _process_app_file(app_path,cmp):
+    content=[]
+    try:
+        with open(app_path,"r") as f:
+            content=f.readlines()
+    except:
+        pass
+    for line in content:
+        if line.startswith("Name"):
+            _set_name_from_app(line,cmp)
+        elif line.startswith("Comment"):
+            _set_summary_from_app(line,cmp)
+        elif line.startswith("Icon"):
+            _set_icon_from_app(line,cmp)
+        elif line.startswith("Category"):
+            _set_category_from_app(line,cmp)
+        elif line.startswith("Groups"):
+            _set_rating_from_app(line,cmp)
+        elif line.startswith("ScriptPath"):
+            _set_id_from_app(line,cmp)
+    _add_release_from_app(cmp)
+    return(cmp)
+#def _process_app_file
+
+def _set_icon_from_epi(pkg,included_cmp,icon_path):
+    icn=pkg.get("custom_icon")
+    if icn!=None:
+        icon=appstream.Icon()
+        icon.set_kind(appstream.IconKind.CACHED)
+        icon.set_name(icn.split(".")[0])
+        included_cmp.add_icon(icon)
+        iconL=appstream.Icon()
+        iconL.set_kind(appstream.IconKind.LOCAL)
+        iconL.set_name(icn.split(".")[0])
+        iconL.set_filename(os.path.join(icon_path,icn))
+        included_cmp.add_icon(iconL)
+#def _set_icon_from_epi
+
+def _add_artifacts_from_epi(pkg,rls):
+    artifact=appstream.Artifact()
+    artifact.set_kind(appstream.ArtifactKind.BINARY)
+	print(pkg)
+    if pkg.get("name")!=None:
+        artifact.set_bundle_kind(appstream.BundleKind.TARBALL)
+        if pkg.get("type")=="flatpak":
+            artifact.set_bundle_kind(appstream.BundleKind.FLATPAK)
+        elif pkg.get("type")=="snap":
+            artifact.set_bundle_kind(appstream.BundleKind.SNAP)
+        elif pkg.get("type")=="appimage":
+            artifact.set_bundle_kind(appstream.BundleKind.APPIMAGE)
+        elif pkg.get("type")=="apt":
+            artifact.set_bundle_kind(appstream.BundleKind.PACKAGE)
+        elif pkg.get("type")==None:
+            if "appimage" in pkg["name"].lower():
+                artifact.set_bundle_kind(appstream.BundleKind.APPIMAGE)
+            elif "snap" in pkg["name"].lower():
+                artifact.set_bundle_kind(appstream.BundleKind.SNAP)
+            elif "flatpak" in pkg["name"].lower():
+                artifact.set_bundle_kind(appstream.BundleKind.FLATPAK)
+        artifact.set_filename(pkg["name"])
+    rls.add_artifact(artifact)
+#def _add_artifacts_from_epi
+
+def _process_epi_file(epi_path,cmp,components_array):
+    content={}
+    try:
+        with open(epi_path,"r") as f:
+            content=json.load(f)
+    except Exception as e:
+        print(e)
+    #One zmd could include one or more applications
+    #Applications could be in any format, including binaries
+    #Each generated package would have one relase arctifact with the zmd 
+    releases=cmp.get_releases()
+    rls=releases[0]
+    icon_path=content.get("custom_icon_path")
+    pkg_list=content.get("pkg_list",[])
+    for pkg in pkg_list:
+        _add_artifacts_from_epi(pkg,rls)
+        included_cmp=appstream.Component()
+        pkgId=pkg.get("name")
+        if pkgId==None:
+            continue
+        included_cmp.set_id(pkgId)
+        pkgname=pkg.get("custom_name",pkg["name"])
+        if pkgname==None:
+            continue
+        included_cmp.set_name(pkgname,"C")
+        included_cmp.set_summary(pkgname,"C")
+        _set_icon_from_epi(pkg,included_cmp,icon_path)
+        #_setEpiBundle(pkg,included_cmp)
+        included_cmp.set_pkgname(cmp.get_pkgname())
+        components_array.append(included_cmp)
+#def _process_epi_file
+
+def _generate_metainfo(app_path,pkg_path,epi_path,zmd_file):
+    pkgname=os.path.basename(pkg_path.removesuffix("/"))
+    if isinstance(epi_path,list):
+        if len(epi_path)>0:
+            epi_path=os.path.join(pkg_path, epi_path[0])
+    xml_path=os.path.join(pkg_path,"usr","share","metainfo","{}.appdata.xml".format(pkgname.replace("-",".")))
+    cmp=appstream.Component()
+    components_array=[]
+    store=appstream.Metadata()
+    if os.path.exists(app_path):
+        cmp.set_pkgname(pkgname)
+        launchable=appstream.Launchable()
+        launchable.set_kind(appstream.LaunchableKind.UNKNOWN)
+        zmd_path=os.path.join("/usr","share","zero-center","zmds",os.path.basename(zmd_file))
+        launchable.add_entry(zmd_path)
+        cmp.add_launchable(launchable)
+        _process_app_file(app_path,cmp)
+    store.add_component(cmp)
+    if isinstance(epi_path,str):
+        if os.path.exists(epi_path):
+            _process_epi_file(epi_path,cmp,components_array)
+    for cmp in components_array:
+        store.add_component(cmp)
+    if os.path.exists(os.path.dirname(xml_path))==False:
+        os.makedirs(os.path.dirname(xml_path))
+    #Remove old appdata.xml
+    for l in os.scandir(os.path.dirname(xml_path)):
+        if l.path.endswith(".xml"):
+            os.unlink(l.path)
+    store.save_catalog(xml_path,appstream.FormatKind.XML)
+#def _generate_metainfo
 
 def search_epi_path(fichero):
     with open(fichero, encoding="utf-8") as f:
@@ -35,11 +264,13 @@ def main():
                     files_to_process = [ x.strip() for x in file_descriptor.readlines() ]
                 for file_path in files_to_process:
                     app_file = next(glob.iglob(f"{file_path}/*.app"), None)
+                    if app_file==None:
+                        continue
                     zmd_file = next(glob.iglob(f"{file_path}/*.zmd"), None)
                     epi_path = None
                     if zmd_file is not None:
                         epi_path = search_epi_path(zmd_file)
-                    print(app_file, f"debian/{pkg}",  epi_path)
+                    _generate_metainfo(app_file, f"debian/{pkg}", epi_path, zmd_file)
 
 if __name__ == '__main__':
     main()
