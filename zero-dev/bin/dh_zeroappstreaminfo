@@ -177,6 +177,27 @@ def _add_artifacts_from_epi(pkg,rls):
     rls.add_artifact(artifact)
 #def _add_artifacts_from_epi
 
+def _generate_included_cmp(pkg,pkg_id,pkg_name,cmp,icon_path):
+    included_cmp=appstream.Component()
+    pkg_id=pkg.get("name")
+    included_cmp.set_id(pkg_id)
+    included_cmp.set_name(pkg_name,"C")
+    included_cmp.set_summary(pkg_name,"C")
+    _set_icon_from_epi(pkg,included_cmp,icon_path)
+    #_setEpiBundle(pkg,included_cmp)
+    included_cmp.set_pkgname(cmp.get_pkgname())
+    # set launchable as zmd launchable + pkgname
+    launchable=cmp.get_launchable(appstream.LaunchableKind.UNKNOWN)
+    if launchable!=None:
+        included_launchable=appstream.Launchable()
+        included_launchable.set_kind(appstream.LaunchableKind.UNKNOWN)
+        entries=launchable.get_entries()
+        entries[0]+=" {}".format(pkg_id)
+        included_launchable.add_entry(entries[0])
+        included_cmp.add_launchable(included_launchable)
+    return(included_cmp)
+#def _generate_included_cmp
+
 def _process_epi_file(epi_path,cmp,components_array):
     content={}
     try:
@@ -193,28 +214,13 @@ def _process_epi_file(epi_path,cmp,components_array):
     pkg_list=content.get("pkg_list",[])
     for pkg in pkg_list:
         _add_artifacts_from_epi(pkg,rls)
-        included_cmp=appstream.Component()
         pkg_id=pkg.get("name")
         if pkg_id==None:
             continue
-        included_cmp.set_id(pkg_id)
-        pkgname=pkg.get("custom_name",pkg["name"])
-        if pkgname==None:
+        pkg_name=pkg.get("custom_name",pkg["name"])
+        if pkg_name==None:
             continue
-        included_cmp.set_name(pkgname,"C")
-        included_cmp.set_summary(pkgname,"C")
-        _set_icon_from_epi(pkg,included_cmp,icon_path)
-        #_setEpiBundle(pkg,included_cmp)
-        included_cmp.set_pkgname(cmp.get_pkgname())
-        # set launchable as zmd launchable + pkgname
-        launchable=cmp.get_launchable(appstream.LaunchableKind.UNKNOWN)
-        if launchable!=None:
-            included_launchable=appstream.Launchable()
-            included_launchable.set_kind(appstream.LaunchableKind.UNKNOWN)
-            entries=launchable.get_entries()
-            entries[0]+=" {}".format(pkg_id)
-            included_launchable.add_entry(entries[0])
-            included_cmp.add_launchable(included_launchable)
+        included_cmp=_generate_included_cmp(pkg,pkg_id,pkg_name,cmp,icon_path)
         components_array.append(included_cmp)
 #def _process_epi_file
 
@@ -235,12 +241,14 @@ def _generate_metainfo(app_path,pkg_path,epi_path,zmd_file):
         launchable.add_entry(zmd_path)
         cmp.add_launchable(launchable)
         _process_app_file(app_path,cmp)
-    store.add_component(cmp)
+    if cmp!=None:
+        store.add_component(cmp)
     if isinstance(epi_path,str):
         if os.path.exists(epi_path):
             _process_epi_file(epi_path,cmp,components_array)
     for cmp in components_array:
-        store.add_component(cmp)
+        if cmp!=None:
+            store.add_component(cmp)
     if os.path.exists(os.path.dirname(xml_path))==False:
         os.makedirs(os.path.dirname(xml_path))
     #Remove old appdata.xml
