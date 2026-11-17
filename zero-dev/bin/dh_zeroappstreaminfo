@@ -80,7 +80,6 @@ def _set_category_from_app(line,cmp):
     cmp.add_category(categoryMap.get(category.lower(),category.capitalize()).strip())
 #def _set_category_from_app
 
-def _add_category(category_from_app_file,cmp):
 '''
 Format for file debian/categories is "packagename1:cat1;cat2\npackagename2:cat2;cat3"
 Default values could be setted specifying only the categories as "cat1;cat2"
@@ -89,6 +88,7 @@ Example, set category "Office" for pkg1 and "Game";"Arcade" for any other:
     Game;Arcade
     pkg1:Office
 '''
+def _add_category(category_from_app_file,cmp):
     pkgname=cmp.get_pkgname()
     if os.path.isfile("debian/categories"):
         content=[]
@@ -208,11 +208,11 @@ def _add_artifacts_from_epi(pkg,rls):
     rls.add_artifact(artifact)
 #def _add_artifacts_from_epi
 
-def _generate_included_cmp(pkg,pkg_id,pkg_name,cmp,icon_path):
 '''
 Store will use any launchable of kind UNKNOWN as the zmd to execute
 for included apps the pkgname is appended so epi-gtk shows only the wanted package
 '''
+def _generate_included_cmp(pkg,pkg_id,pkg_name,cmp,icon_path):
     included_cmp=appstream.Component()
     pkg_id=pkg.get("name")
     included_cmp.set_id(pkg_id)
@@ -239,7 +239,11 @@ def _process_epi_file(epi_path,cmp,components_array):
             content=json.load(f)
     except Exception as e:
         print(e)
-    releases=cmp.get_releases()
+    if hasattr(cmp,"get_releses"):
+        releases=cmp.get_releases()
+    else:
+        releases=cmp.get_releases_plain().get_entries()
+        print(releases)
     rls=releases[0]
     icon_path=content.get("custom_icon_path")
     #One zmd includes one or more applications
