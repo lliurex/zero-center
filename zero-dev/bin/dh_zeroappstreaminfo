@@ -3,7 +3,7 @@ import sys,os,json
 import gi
 gi.require_version('AppStream', '1.0')
 from gi.repository import AppStream as appstream
-from shutil import move
+from shutil import move,copy
 from devscripts import control
 from edupals.zerocenter.zerocenterhelper import ZeroCenterDH
 
@@ -60,11 +60,6 @@ def _set_icon_from_app(line,cmp):
     cmp.add_icon(iconL)
 #def _set_icon_from_app
 
-def _set_category_from_app(line,cmp):
-    cat=line.strip().split("=")[-1]
-    cmp.add_category(categoryMap.get(cat.lower(),cat.capitalize()))
-#def _set_category_from_app
-
 def _set_rating_from_app(line,cmp):
     grp=line.strip().split("=")[-1]
     cra=appstream.ContentRating()
@@ -80,18 +75,36 @@ def _set_id_from_app(line,cmp):
     cmp.set_id(os.path.basename(cid).removesuffix(".zmd"))
 #def _set_id_from_app
 
+def _set_category_from_app(line,cmp):
+    category=line.strip().split("=")[-1]
+    cmp.add_category(categoryMap.get(category.lower(),category.capitalize()).strip())
+#def _set_category_from_app
+
+def _add_category(line,cmp):
+    pkgname=cmp.get_pkgname()
+    if os.path.isfile("debian/{0}.categories".format(pkgname)):
+        category_file="debian/{0}.categories".format(pkgname)
+        with open(category_file,"r") as f:
+            content=f.read()
+            for category in content.split(";"):
+                if len(cat)>0:
+                    cmp.add_category(category.strip().capitalize())
+    if len(cmp.get_categories())==0:
+        _set_category_from_app(line,cmp)
+#def _add_category
+
 def _add_release_from_app(cmp):
     rel=appstream.Release()
     rel.set_kind(appstream.ReleaseKind.STABLE)
     isodate=""
-    release="0.1"
+    release="0.0"
     if os.path.isfile("debian/changelog"):
         content=[]
         with open("debian/changelog","r") as f:
             content=f.readlines()
         for line in content:
             #minimal check. first line of a block must declare urgency=low|medium|high
-            if "urgency" in line and release=="0.1":
+            if "urgency" in line and release=="0.0":
                 idx_from=line.index("(")+1
                 idx_to=line.index(")")
                 release=line[idx_from:idx_to]
@@ -122,6 +135,7 @@ def _process_app_file(app_path,cmp):
             content=f.readlines()
     except:
         pass
+    category_from_app_file=""
     for line in content:
         if line.startswith("Name"):
             _set_name_from_app(line,cmp)
@@ -130,11 +144,12 @@ def _process_app_file(app_path,cmp):
         elif line.startswith("Icon"):
             _set_icon_from_app(line,cmp)
         elif line.startswith("Category"):
-            _set_category_from_app(line,cmp)
+            _category_from_app_file=line
         elif line.startswith("Groups"):
             _set_rating_from_app(line,cmp)
         elif line.startswith("ScriptPath"):
             _set_id_from_app(line,cmp)
+    _add_category(_category_from_app_file,cmp)
     _add_release_from_app(cmp)
     return(cmp)
 #def _process_app_file
@@ -286,6 +301,8 @@ def main():
                     epi_path = None
                     if zmd_file is not None:
                         epi_path = search_epi_path(zmd_file)
+                    if os.path.exists('debian/categories'):
+                        copy('debian/categories', 'debian/{0}.categories'.format(pkg))
                     _generate_metainfo(app_file, f"debian/{pkg}", epi_path, zmd_file)
 
 if __name__ == '__main__':
