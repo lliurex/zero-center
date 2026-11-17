@@ -1,3 +1,10 @@
+zero-center (1:2.304) noble; urgency=medium
+
+  * zero-dev:
+  *   Add dh_zeroappstreaminfo to generate appstream files 
+
+ -- Juanma1980 <juanma1980@gmail.com>  Tue, 17 Nov 2026 19:57:38 +0100
+
 zero-center (1:2.303) noble; urgency=medium
 
   * better language support 
