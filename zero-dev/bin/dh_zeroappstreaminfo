@@ -211,9 +211,8 @@ def _generate_included_cmp(pkg,pkg_id,pkg_name,cmp,icon_path):
     included_cmp.set_name(pkg_name,"C")
     included_cmp.set_summary(pkg_name,"C")
     _set_icon_from_epi(pkg,included_cmp,icon_path)
-    #_setEpiBundle(pkg,included_cmp)
     included_cmp.set_pkgname(cmp.get_pkgname())
-    # set launchable as zmd launchable + pkgname
+    # Launchable is master component's launchable + pkgname
     launchable=cmp.get_launchable(appstream.LaunchableKind.UNKNOWN)
     if launchable!=None:
         included_launchable=appstream.Launchable()
@@ -232,8 +231,8 @@ def _process_epi_file(epi_path,cmp,components_array):
             content=json.load(f)
     except Exception as e:
         print(e)
-    #One zmd could include one or more applications
-    #Applications could be in any format, including binaries
+    #One zmd includes one or more applications
+    #Each Application could be of any format, including binaries
     #Each generated package would have one relase arctifact with the zmd 
     releases=cmp.get_releases()
     rls=releases[0]
@@ -285,10 +284,11 @@ def _generate_metainfo(app_path,pkg_path,epi_path,zmd_file):
     store.save_catalog(xml_path,appstream.FormatKind.XML)
 #def _generate_metainfo
 
-def search_epi_path(fichero):
-    with open(fichero, encoding="utf-8") as f:
-        contenido = f.read()
-    return [m.group(1) or m.group(2) or m.group(3) for m in PATRON.finditer(contenido)]
+def search_epi_path(zmd_file):
+    with open(zmd_file, encoding="utf-8") as f:
+        content = f.read()
+    return [m.group(1) or m.group(2) or m.group(3) for m in PATRON.finditer(content)]
+#def search_epi_path
 
 def main():
     zeroinstaller = ZeroCenterDH()
