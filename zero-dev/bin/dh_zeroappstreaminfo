@@ -80,24 +80,29 @@ def _set_category_from_app(line,cmp):
     cmp.add_category(categoryMap.get(category.lower(),category.capitalize()).strip())
 #def _set_category_from_app
 
-def _add_category(line,cmp):
+def _add_category(category_from_app_file,cmp):
+#format of debian/categories must be "packagename1:cat1;cat2\npackagename2:cat2;cat3"
+#magic value "default" for packagename set given categories as default (default:cat1;cat2)
     pkgname=cmp.get_pkgname()
-    if os.path.isfile("debian/{0}.categories".format(pkgname)):
-        category_file="debian/{0}.categories".format(pkgname)
-        content=""
+    if os.path.isfile("debian/categories"):
+        content=[]
+        categories=""
+        category_file="debian/categories"
         with open(category_file,"r") as f:
-            content=f.read()
-        categories=content
-        if ":" in content:
-            categories=""
-            for pkg in content.split():
-                if pkg.startswith(pkgname):
-                    categories=pkg.split(":")[-1]
+            content=f.readlines()
+        for line in content:
+            if line.replace(" ","").startswith("{0}:".format(pkgname)):
+                categories=line.split(":")[-1].strip()
+                break
+            elif line.replace(" ","").startswith("default:"):
+                categories=line.split(":")[-1].strip()
+            elif ":" not in line and len(line.strip())>0:
+                categories=line.strip()
         for category in categories.split(";"):
             if len(category)>0:
                 cmp.add_category(category.strip().capitalize())
     if len(cmp.get_categories())==0:
-        _set_category_from_app(line,cmp)
+        _set_category_from_app(category_from_app_file,cmp)
 #def _add_category
 
 def _add_release_from_app(cmp):
@@ -308,8 +313,6 @@ def main():
                     epi_path = None
                     if zmd_file is not None:
                         epi_path = search_epi_path(zmd_file)
-                    if os.path.exists('debian/categories'):
-                        copy('debian/categories', 'debian/{0}.categories'.format(pkg))
                     _generate_metainfo(app_file, f"debian/{pkg}", epi_path, zmd_file)
 
 if __name__ == '__main__':
