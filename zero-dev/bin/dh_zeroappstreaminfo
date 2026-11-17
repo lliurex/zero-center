@@ -84,11 +84,18 @@ def _add_category(line,cmp):
     pkgname=cmp.get_pkgname()
     if os.path.isfile("debian/{0}.categories".format(pkgname)):
         category_file="debian/{0}.categories".format(pkgname)
+        content=""
         with open(category_file,"r") as f:
             content=f.read()
-            for category in content.split(";"):
-                if len(category)>0:
-                    cmp.add_category(category.strip().capitalize())
+        categories=content
+        if ":" in content:
+            categories=""
+            for pkg in content.split():
+                if pkg.startswith(pkgname):
+                    categories=pkg.split(":")[-1]
+        for category in categories.split(";"):
+            if len(category)>0:
+                cmp.add_category(category.strip().capitalize())
     if len(cmp.get_categories())==0:
         _set_category_from_app(line,cmp)
 #def _add_category
