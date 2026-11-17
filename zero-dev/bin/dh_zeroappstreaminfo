@@ -81,8 +81,14 @@ def _set_category_from_app(line,cmp):
 #def _set_category_from_app
 
 def _add_category(category_from_app_file,cmp):
-#format of debian/categories must be "packagename1:cat1;cat2\npackagename2:cat2;cat3"
-#magic value "default" for packagename set given categories as default (default:cat1;cat2)
+'''
+Format for file debian/categories is "packagename1:cat1;cat2\npackagename2:cat2;cat3"
+Default values could be setted specifying only the categories as "cat1;cat2"
+Example, set category "Office" for pkg1 and "Game";"Arcade" for any other:
++++file categories
+    Game;Arcade
+    pkg1:Office
+'''
     pkgname=cmp.get_pkgname()
     if os.path.isfile("debian/categories"):
         content=[]
@@ -94,8 +100,6 @@ def _add_category(category_from_app_file,cmp):
             if line.replace(" ","").startswith("{0}:".format(pkgname)):
                 categories=line.split(":")[-1].strip()
                 break
-            elif line.replace(" ","").startswith("default:"):
-                categories=line.split(":")[-1].strip()
             elif ":" not in line and len(line.strip())>0:
                 categories=line.strip()
         for category in categories.split(";"):
@@ -205,6 +209,10 @@ def _add_artifacts_from_epi(pkg,rls):
 #def _add_artifacts_from_epi
 
 def _generate_included_cmp(pkg,pkg_id,pkg_name,cmp,icon_path):
+'''
+Store will use any launchable of kind UNKNOWN as the zmd to execute
+for included apps the pkgname is appended so epi-gtk shows only the wanted package
+'''
     included_cmp=appstream.Component()
     pkg_id=pkg.get("name")
     included_cmp.set_id(pkg_id)
@@ -231,14 +239,13 @@ def _process_epi_file(epi_path,cmp,components_array):
             content=json.load(f)
     except Exception as e:
         print(e)
-    #One zmd includes one or more applications
-    #Each Application could be of any format, including binaries
-    #Each generated package would have one relase arctifact with the zmd 
     releases=cmp.get_releases()
     rls=releases[0]
     icon_path=content.get("custom_icon_path")
+    #One zmd includes one or more applications
     pkg_list=content.get("pkg_list",[])
     for pkg in pkg_list:
+        #Add an artifact to the release for each of them
         _add_artifacts_from_epi(pkg,rls)
         pkg_id=pkg.get("name")
         if pkg_id==None:
@@ -269,18 +276,19 @@ def _generate_metainfo(app_path,pkg_path,epi_path,zmd_file):
         _process_app_file(app_path,cmp)
     if cmp!=None:
         store.add_component(cmp)
-    if isinstance(epi_path,str):
-        if os.path.exists(epi_path):
-            _process_epi_file(epi_path,cmp,components_array)
+        if isinstance(epi_path,str):
+            if os.path.exists(epi_path):
+                _process_epi_file(epi_path,cmp,components_array)
     for cmp in components_array:
         if cmp!=None:
             store.add_component(cmp)
     if os.path.exists(os.path.dirname(xml_path))==False:
         os.makedirs(os.path.dirname(xml_path))
-    #Remove old appdata.xml
-    for l in os.scandir(os.path.dirname(xml_path)):
-        if l.path.endswith(".xml"):
-            os.unlink(l.path)
+    else:
+        #Remove old appdata.xml
+        for l in os.scandir(os.path.dirname(xml_path)):
+            if l.path.endswith(".xml"):
+                os.unlink(l.path)
     store.save_catalog(xml_path,appstream.FormatKind.XML)
 #def _generate_metainfo
 
