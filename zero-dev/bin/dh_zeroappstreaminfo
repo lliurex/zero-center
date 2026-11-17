@@ -87,7 +87,7 @@ def _add_category(line,cmp):
         with open(category_file,"r") as f:
             content=f.read()
             for category in content.split(";"):
-                if len(cat)>0:
+                if len(category)>0:
                     cmp.add_category(category.strip().capitalize())
     if len(cmp.get_categories())==0:
         _set_category_from_app(line,cmp)
