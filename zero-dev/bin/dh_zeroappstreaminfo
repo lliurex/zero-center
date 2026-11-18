@@ -216,8 +216,13 @@ def _generate_included_cmp(pkg,pkg_id,pkg_name,cmp,icon_path):
     included_cmp=appstream.Component()
     pkg_id=pkg.get("name")
     included_cmp.set_id(pkg_id)
-    included_cmp.set_name(pkg_name,"C")
-    included_cmp.set_summary(pkg_name,"C")
+    if isinstance(pkg_name,dict):
+        for lang,name in pkg_name.items():
+            included_cmp.set_name(name,lang)
+            included_cmp.set_summary(name,lang)
+    else:
+        included_cmp.set_name(pkg_name,"C")
+        included_cmp.set_summary(pkg_name,"C")
     _set_icon_from_epi(pkg,included_cmp,icon_path)
     included_cmp.set_pkgname(cmp.get_pkgname())
     # Launchable is master component's launchable + pkgname
