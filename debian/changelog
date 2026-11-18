@@ -1,3 +1,10 @@
+zero-center (1:2.193) jammy; urgency=medium
+
+  * Zero-dev:
+  *  Backport dh_zeroappstreaminfo from noble
+
+ -- Juanma1980 <juanma1980@gmail.com>  Wed, 18 Nov 2026 07:11:45 +0100
+
 zero-center (1:2.192) jammy; urgency=medium
 
   * better language support
