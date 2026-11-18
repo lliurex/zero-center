@@ -1,4 +1,4 @@
-zero-center (1:2.304.2-0lliurex) noble; urgency=medium
+zero-center (1:2.304.3) noble; urgency=medium
 
   * zero-dev:
   *   Add dh_zeroappstreaminfo to generate appstream files 
