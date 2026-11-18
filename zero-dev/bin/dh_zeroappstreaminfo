@@ -243,7 +243,6 @@ def _process_epi_file(epi_path,cmp,components_array):
         releases=cmp.get_releases()
     else:
         releases=cmp.get_releases_plain().get_entries()
-        print(releases)
     rls=releases[0]
     icon_path=content.get("custom_icon_path")
     #One zmd includes one or more applications
