@@ -239,11 +239,10 @@ def _process_epi_file(epi_path,cmp,components_array):
             content=json.load(f)
     except Exception as e:
         print(e)
-    if hasattr(cmp,"get_releses"):
+    if hasattr(cmp,"get_releases"):
         releases=cmp.get_releases()
     else:
         releases=cmp.get_releases_plain().get_entries()
-        print(releases)
     rls=releases[0]
     icon_path=content.get("custom_icon_path")
     #One zmd includes one or more applications
