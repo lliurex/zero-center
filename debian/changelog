@@ -1,4 +1,4 @@
-zero-center (1:2.193.1) jammy; urgency=medium
+zero-center (1:2.193.2) jammy; urgency=medium
 
   * Zero-dev:
   *  Backport dh_zeroappstreaminfo from noble
